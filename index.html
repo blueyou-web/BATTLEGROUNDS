@@ -4292,7 +4292,7 @@ async function handleCombatClick(e) {
             previewCharacterId = null;
             await logAction(`👮 관리자가 ${clickedChar.name}의 행동을 대리합니다.`, 'admin');
             render();
-            return;
+            return; 
         } else if (isMyTurn) {
             selectedCharacterId = clickedChar.id;
             selectedCharActionPhase = 'MOVE';
@@ -4300,7 +4300,7 @@ async function handleCombatClick(e) {
             preMovePosition = { x: clickedChar.x, y: clickedChar.y };
             previewCharacterId = null;
             render();
-            return;
+            return; 
         }
         
         if (clickedChar) {
