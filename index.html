@@ -1220,6 +1220,7 @@
     const DEFAULT_PC_PASSWORD = "1234";
     const PREDEFINED_EFFECTS = {
     rooted: { id: 'rooted', name: '속박'},
+    stunned: { id: 'stunned', name: '행동 불가' },
     poisoned: { id: 'poisoned', name: '중독', effectType: 'damage' },
     strengthUp: { id: 'strengthUp', name: '공격력 강화', value: 1.5 },
     strengthDown: { id: 'strengthDown', name: '공격력 약화', value: 0.5 },
@@ -1229,7 +1230,8 @@
 };
 
     const STATUS_EFFECT_ICONS = {
-    rooted: '🔗',         
+    rooted: '🔗',
+    stunned: '💫',
     poisoned: '☠️',        
     regenerating: '🌿',   
     strengthUp: '💪',     
@@ -1251,8 +1253,8 @@
         'move': { id: 'move', name: '이동', type: 'Utility', range: 1, rangeShape: 'diamond', multiplier: 0, icon: '🏃', mpCost: 0, category: 'Utility' }, // 기본 이동 거리를 1로 설정
         'slash': { id: 'slash', name: '베기', type: 'Melee', range: 1, rangeShape: 'diamond', multiplier: 1.5, icon: '⚔️', mpCost: 5, category: 'Attack' },
         'stomp': { id: 'stomp', name: '발 구르기', type: 'Melee', range: 1, rangeShape: 'square', multiplier: 1.2, icon: '💥', mpCost: 8, category: 'Attack'},
-        'crosscut': { id: 'crosscut', name: '십자 베기', type: 'Melee', range: 2, rangeShape: 'cross', multiplier: 1.0, icon: '十字', mpCost: 10, category: 'Attack'},
-        'binding_chains': { id: 'binding_chains', name: '속박의 사슬', type: 'Melee', range: 1, rangeShape: 'square', multiplier: 1.0, icon: '🔗', mpCost: 20, category: 'Attack', appliesEffect: { id: 'rooted', name: '속박', turns: 2 }},
+        'crosscut': { id: 'crosscut', name: '십자 베기', type: 'Melee', range: 2, rangeShape: 'cross', multiplier: 1.0, icon: '十', mpCost: 10, category: 'Attack'},
+        'binding_chains': { id: 'binding_chains', name: '속박의 사슬', type: 'Melee', range: 1, rangeShape: 'square', multiplier: 1.0, icon: '🔗', mpCost: 20, category: 'Attack', appliesEffect: { id: 'stunned', turns: 1 }},
         'poison': { 
             id: 'poison', 
             name: '중독', 
@@ -1264,7 +1266,7 @@
             mpCost: 15, 
             category: 'Attack',
             // 3턴 동안 턴마다 10의 피해를 주는 효과
-            appliesEffect: { id: 'poisoned', name: '중독', turns: 3, value: 10 } 
+            appliesEffect: { id: 'poisoned', turns: 3, value: 10 } 
         },
         'shoot': { id: 'shoot', name: '사격', type: 'Ranged', range: 4, rangeShape: 'diamond', multiplier: 1.0, icon: '🏹', mpCost: 5, category: 'Attack' },
         'fireball': { id: 'fireball', name: '화염구', type: 'Ranged', range: 3, rangeShape: 'square', multiplier: 1.0, icon: '🔥', isAoe: true, aoeRange: 1, aoeShape: 'square', mpCost: 15, category: 'Attack' },
@@ -1459,77 +1461,79 @@
         break;
     
     case 'PLAYER_PHASE': { // 블록 스코프({})를 사용하여 변수 충돌을 방지합니다.
-        showBannerAnnouncement(`Round ${round}`, "아군 턴 시작");
+    showBannerAnnouncement(`Round ${round}`, "아군 턴 시작");
+    
+    const livingPCs = characters.filter(c => c.type === 'PC' && c.hp > 0 && c.x !== null);
+    if (livingPCs.length > 0) {
+        const batch = writeBatch(db);
+        let mpWasRecovered = false;
         
-        const livingPCs = characters.filter(c => c.type === 'PC' && c.hp > 0 && c.x !== null);
-        if (livingPCs.length > 0) {
-            const batch = writeBatch(db);
-            let mpWasRecovered = false;
-            
-            // 1. MP 회복 및 상태 효과 처리 준비
-            for (const pc of livingPCs) {
-                const charRef = doc(db, 'games', gameId, 'characters', pc.id);
-                let updates = {};
+        for (const pc of livingPCs) {
+            const charRef = doc(db, 'games', gameId, 'characters', pc.id);
+            let updates = {};
 
-                // MP 회복 로직
-                const newMp = Math.min(pc.maxMp, pc.mp + MP_REGEN_PER_TURN);
-                if (newMp > pc.mp) {
-                    updates.mp = newMp;
-                    mpWasRecovered = true;
-                }
-
-                // 상태 효과 처리 로직 (재생, 중독, 버프, 디버프 등)
-                const effects = pc.statusEffects || [];
-                if (effects.length > 0) {
-                    let finalHp = pc.hp;
-                    let hpChanged = false;
-
-                    const updatedEffects = effects.reduce((acc, effect) => {
-                        // 재생 효과
-                        if (effect.effectType === 'heal') {
-                            const healAmount = effect.value || 15;
-                            finalHp = Math.min(pc.maxHp, finalHp + healAmount);
-                            hpChanged = true;
-                            logAction(`🌿 ${pc.name}이(가) [${effect.name}] 효과로 **${healAmount} HP**를 회복했습니다!`, "heal");
-                        } 
-                        // 중독 등 지속 피해 효과
-                        else if (effect.effectType === 'damage') {
-                            const damageAmount = effect.value || 10;
-                            finalHp = Math.max(0, finalHp - damageAmount);
-                            hpChanged = true;
-                            logAction(`☠️ ${pc.name}이(가) [${effect.name}] 효과로 **${damageAmount} 피해**를 입었습니다!`, "damage");
-                        }
-
-                        // ✨ [핵심 수정] 모든 효과의 지속시간을 1씩 감소시킵니다.
-                        const newTurnsRemaining = effect.turnsRemaining - 1;
-
-                        if (newTurnsRemaining > 0) {
-                            acc.push({ ...effect, turnsRemaining: newTurnsRemaining });
-                        } else {
-                            logAction(`⏱️ ${pc.name}의 [${effect.name}] 효과가 사라졌습니다.`, "system");
-                        }
-                        return acc;
-                    }, []);
-                    
-                    updates.statusEffects = updatedEffects;
-                    if (hpChanged) {
-                        updates.hp = finalHp;
-                    }
-                }
-                
-                if (Object.keys(updates).length > 0) {
-                    batch.update(charRef, updates);
-                }
+            // MP 회복 로직
+            const newMp = Math.min(pc.maxMp, pc.mp + MP_REGEN_PER_TURN);
+            if (newMp > pc.mp) {
+                updates.mp = newMp;
+                mpWasRecovered = true;
             }
 
-            // 2. 모든 변경사항을 한번에 적용
-            await batch.commit();
-            if (mpWasRecovered) {
-                    await logAction(`💧 모든 아군이 ${MP_REGEN_PER_TURN}의 MP를 회복했습니다.`, "system");
+            const effects = pc.statusEffects || [];
+            if (effects.length > 0) {
+                const isStunned = effects.some(effect => effect.id === 'stunned');
+                if (isStunned) {
+                    logAction(`💫 ${pc.name}은(는) [행동 불가] 상태이므로 턴이 자동으로 넘어갑니다.`, "system");
+                    updates.hasActedThisRound = true;
+                }
+
+                let finalHp = pc.hp;
+                let hpChanged = false;
+
+                const updatedEffects = effects.reduce((acc, effect) => {
+                    // 재생 효과
+                    if (effect.effectType === 'heal') {
+                        const healAmount = effect.value || 15;
+                        finalHp = Math.min(pc.maxHp, finalHp + healAmount);
+                        hpChanged = true;
+                        logAction(`🌿 ${pc.name}이(가) [${effect.name}] 효과로 **${healAmount} HP**를 회복했습니다!`, "heal");
+                    } 
+                    else if (effect.effectType === 'damage') {
+                        const damageAmount = effect.value || 10;
+                        finalHp = Math.max(0, finalHp - damageAmount);
+                        hpChanged = true;
+                        logAction(`☠️ ${pc.name}이(가) [${effect.name}] 효과로 **${damageAmount} 피해**를 입었습니다!`, "damage");
+                    }
+
+                    const newTurnsRemaining = effect.turnsRemaining - 1;
+
+                    if (newTurnsRemaining > 0) {
+                        acc.push({ ...effect, turnsRemaining: newTurnsRemaining });
+                    } else {
+                        logAction(`⏱️ ${pc.name}의 [${effect.name}] 효과가 사라졌습니다.`, "system");
+                    }
+                    return acc;
+                }, []);
+                
+                updates.statusEffects = updatedEffects;
+                if (hpChanged) {
+                    updates.hp = finalHp;
+                }
+            }
+            
+            if (Object.keys(updates).length > 0) {
+                batch.update(charRef, updates);
             }
         }
-        break;
-    } 
+
+        // 모든 변경사항을 한번에 적용
+        await batch.commit();
+        if (mpWasRecovered) {
+                await logAction(`💧 모든 아군이 ${MP_REGEN_PER_TURN}의 MP를 회복했습니다.`, "system");
+        }
+    }
+    break;
+}
         
     case 'ENEMY_EXECUTION': { // 블록 스코프로 감싸기
         showBannerAnnouncement(`Round ${round}`, "적군 턴 시작");
@@ -1783,9 +1787,18 @@ async function executeSingleEnemyAction(enemyId) {
     currentlyActingEnemyId = null;
     // render()는 onSnapshot 리스너가 DB 변경을 감지하여 자동으로 호출해줍니다.
 }
-async function executeEnemyActions() {
+    async function executeEnemyActions() {
     await logAction(`🔥 적들이 행동을 개시합니다!`, "system");
-    const enemiesToAct = characters.filter(c => c.type === 'ENEMY' && c.hp > 0 && c.nextAction);
+
+    // --- ▼ [핵심 추가] 행동 불가 상태인 적을 찾아 로그를 남깁니다. ---
+    const stunnedEnemies = characters.filter(c => c.type === 'ENEMY' && c.hp > 0 && c.statusEffects?.some(e => e.id === 'stunned'));
+    for (const enemy of stunnedEnemies) {
+        await logAction(`💫 ${enemy.name}은(는) [행동 불가] 상태이므로 행동하지 못합니다.`, "system");
+    }
+    // --- ▲ [핵심 추가] 로직 종료 ---
+
+    // [수정] 행동할 적 목록을 만들 때, 행동 불가(stunned) 상태인 적은 제외합니다.
+    const enemiesToAct = characters.filter(c => c.type === 'ENEMY' && c.hp > 0 && c.nextAction && !c.statusEffects?.some(e => e.id === 'stunned'));
 
     for (const enemy of enemiesToAct) {
         // ✨ [핵심 수정] Firestore의 actingEnemyId를 업데이트하여 모든 클라이언트에 동기화
@@ -2375,19 +2388,17 @@ function renderForeshadowing() {
     }
 
 async function applyStatusEffect(target, effectInfo) {
-    if (!target || !effectInfo) return;
+    if (!target || !effectInfo || !effectInfo.id || !PREDEFINED_EFFECTS[effectInfo.id]) return;
+
+    const baseEffect = PREDEFINED_EFFECTS[effectInfo.id];
 
     const newEffect = {
-        id: effectInfo.id,
-        name: effectInfo.name,
+        ...baseEffect, // baseEffect의 모든 속성(id, name, effectType 등)을 여기에 복사합니다.
         turnsRemaining: effectInfo.turns,
     };
 
     if (effectInfo.value !== undefined) {
         newEffect.value = effectInfo.value;
-    }
-    if (effectInfo.effectType) {
-        newEffect.effectType = effectInfo.effectType;
     }
 
     const targetRef = doc(db, 'games', gameId, 'characters', target.id);
