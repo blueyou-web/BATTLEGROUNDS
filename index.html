@@ -1099,6 +1099,7 @@
                     <p class="text-sm font-semibold" style="color: var(--accent-primary);">현재 턴:</p>
                     <div id="current-turn-char" class="text-xl font-bold font-title" style="color: var(--accent-secondary);">준비 중...</div>
                 </div>
+                 <div id="admin-turn-controls" class="mt-2"></div>
                 <div id="skill-controls" class="mt-4 pb-4 border-b border-border-secondary">
                      <p class="text-sm" style="color: var(--text-tertiary);">캐릭터를 선택하면 스킬이 표시됩니다.</p>
                 </div>
@@ -1460,80 +1461,69 @@
         determineEnemyNextActions();
         break;
     
-    case 'PLAYER_PHASE': { // 블록 스코프({})를 사용하여 변수 충돌을 방지합니다.
-    showBannerAnnouncement(`Round ${round}`, "아군 턴 시작");
-    
-    const livingPCs = characters.filter(c => c.type === 'PC' && c.hp > 0 && c.x !== null);
-    if (livingPCs.length > 0) {
-        const batch = writeBatch(db);
-        let mpWasRecovered = false;
+     case 'PLAYER_PHASE': { // 블록 스코프({})를 사용하여 변수 충돌을 방지합니다.
+        showBannerAnnouncement(`Round ${round}`, "아군 턴 시작");
         
-        for (const pc of livingPCs) {
-            const charRef = doc(db, 'games', gameId, 'characters', pc.id);
-            let updates = {};
-
-            // MP 회복 로직
-            const newMp = Math.min(pc.maxMp, pc.mp + MP_REGEN_PER_TURN);
-            if (newMp > pc.mp) {
-                updates.mp = newMp;
-                mpWasRecovered = true;
-            }
-
-            const effects = pc.statusEffects || [];
-            if (effects.length > 0) {
-                const isStunned = effects.some(effect => effect.id === 'stunned');
-                if (isStunned) {
-                    logAction(`💫 ${pc.name}은(는) [행동 불가] 상태이므로 턴이 자동으로 넘어갑니다.`, "system");
-                    updates.hasActedThisRound = true;
-                }
-
-                let finalHp = pc.hp;
-                let hpChanged = false;
-
-                const updatedEffects = effects.reduce((acc, effect) => {
-                    // 재생 효과
-                    if (effect.effectType === 'heal') {
-                        const healAmount = effect.value || 15;
-                        finalHp = Math.min(pc.maxHp, finalHp + healAmount);
-                        hpChanged = true;
-                        logAction(`🌿 ${pc.name}이(가) [${effect.name}] 효과로 **${healAmount} HP**를 회복했습니다!`, "heal");
-                    } 
-                    else if (effect.effectType === 'damage') {
-                        const damageAmount = effect.value || 10;
-                        finalHp = Math.max(0, finalHp - damageAmount);
-                        hpChanged = true;
-                        logAction(`☠️ ${pc.name}이(가) [${effect.name}] 효과로 **${damageAmount} 피해**를 입었습니다!`, "damage");
-                    }
-
-                    const newTurnsRemaining = effect.turnsRemaining - 1;
-
-                    if (newTurnsRemaining > 0) {
-                        acc.push({ ...effect, turnsRemaining: newTurnsRemaining });
-                    } else {
-                        logAction(`⏱️ ${pc.name}의 [${effect.name}] 효과가 사라졌습니다.`, "system");
-                    }
-                    return acc;
-                }, []);
-                
-                updates.statusEffects = updatedEffects;
-                if (hpChanged) {
-                    updates.hp = finalHp;
-                }
-            }
+        const livingPCs = characters.filter(c => c.type === 'PC' && c.hp > 0 && c.x !== null);
+        if (livingPCs.length > 0) {
+            const batch = writeBatch(db);
+            let mpWasRecovered = false;
             
-            if (Object.keys(updates).length > 0) {
-                batch.update(charRef, updates);
+            for (const pc of livingPCs) {
+                const charRef = doc(db, 'games', gameId, 'characters', pc.id);
+                let updates = {};
+
+                // MP 회복 로직
+                const newMp = Math.min(pc.maxMp, pc.mp + MP_REGEN_PER_TURN);
+                if (newMp > pc.mp) {
+                    updates.mp = newMp;
+                    mpWasRecovered = true;
+                }
+
+                const effects = pc.statusEffects || [];
+                if (effects.length > 0) {
+                    // 행동 불가 상태인지 확인하여 행동한 것으로 처리
+                    const isStunned = effects.some(effect => effect.id === 'stunned');
+                    if (isStunned) {
+                        logAction(`💫 ${pc.name}은(는) [행동 불가] 상태이므로 턴이 자동으로 넘어갑니다.`, "system");
+                        updates.hasActedThisRound = true;
+                    }
+
+                    // [수정] 지속 피해/회복 효과만 적용 (지속시간 감소 로직 완전히 제거)
+                    let finalHp = pc.hp;
+                    let hpChanged = false;
+                    effects.forEach(effect => {
+                        if (effect.effectType === 'heal') {
+                            const healAmount = effect.value || 15;
+                            finalHp = Math.min(pc.maxHp, finalHp + healAmount);
+                            hpChanged = true;
+                            logAction(`🌿 ${pc.name}이(가) [${effect.name}] 효과로 **${healAmount} HP**를 회복했습니다!`, "heal");
+                        } else if (effect.effectType === 'damage') {
+                            const damageAmount = effect.value || 10;
+                            finalHp = Math.max(0, finalHp - damageAmount);
+                            hpChanged = true;
+                            logAction(`☠️ ${pc.name}이(가) [${effect.name}] 효과로 **${damageAmount} 피해**를 입었습니다!`, "damage");
+                        }
+                    });
+
+                    if (hpChanged) {
+                        updates.hp = finalHp;
+                    }
+                }
+                
+                if (Object.keys(updates).length > 0) {
+                    batch.update(charRef, updates);
+                }
+            }
+
+            // 모든 변경사항을 한번에 적용
+            await batch.commit();
+            if (mpWasRecovered) {
+                    await logAction(`💧 모든 아군이 ${MP_REGEN_PER_TURN}의 MP를 회복했습니다.`, "system");
             }
         }
-
-        // 모든 변경사항을 한번에 적용
-        await batch.commit();
-        if (mpWasRecovered) {
-                await logAction(`💧 모든 아군이 ${MP_REGEN_PER_TURN}의 MP를 회복했습니다.`, "system");
-        }
+        break;
     }
-    break;
-}
         
     case 'ENEMY_EXECUTION': { // 블록 스코프로 감싸기
         showBannerAnnouncement(`Round ${round}`, "적군 턴 시작");
@@ -1546,21 +1536,19 @@
                 const charRef = doc(db, 'games', gameId, 'characters', enemy.id);
                 let updates = {};
 
-                // 1. MP 회복 로직 (기존과 동일)
+                // 1. MP 회복 로직
                 const newMp = Math.min(enemy.maxMp, enemy.mp + MP_REGEN_PER_TURN);
                 if (newMp > enemy.mp) {
                     updates.mp = newMp;
                     mpWasRecovered = true;
                 }
 
-                // --- ▼ 상태 효과 처리 로직 (이 부분이 핵심 추가사항) ---
+                // 2. 지속 피해/회복 효과 적용
                 const effects = enemy.statusEffects || [];
                 if (effects.length > 0) {
                     let finalHp = enemy.hp;
                     let hpChanged = false;
-
-                    const updatedEffects = effects.reduce((acc, effect) => {
-                        // 지속 피해/회복 효과 처리
+                    effects.forEach(effect => {
                         if (effect.effectType === 'heal') {
                             const healAmount = effect.value || 15;
                             finalHp = Math.min(enemy.maxHp, finalHp + healAmount);
@@ -1572,37 +1560,27 @@
                             hpChanged = true;
                             logAction(`☠️ ${enemy.name}이(가) [${effect.name}] 효과로 **${damageAmount} 피해**를 입었습니다!`, "damage");
                         }
+                    });
 
-                        // 모든 효과의 지속시간을 1씩 감소
-                        const newTurnsRemaining = effect.turnsRemaining - 1;
-                        if (newTurnsRemaining > 0) {
-                            acc.push({ ...effect, turnsRemaining: newTurnsRemaining });
-                        } else {
-                            logAction(`⏱️ ${enemy.name}의 [${effect.name}] 효과가 사라졌습니다.`, "system");
-                        }
-                        return acc;
-                    }, []);
-                    
-                    updates.statusEffects = updatedEffects;
                     if (hpChanged) {
                         updates.hp = finalHp;
                     }
                 }
-                // --- ▲ 상태 효과 처리 로직 종료 ---
                 
+                // [수정] for 루프 안에서 각 enemy의 업데이트를 batch에 추가합니다.
                 if (Object.keys(updates).length > 0) {
                     batch.update(charRef, updates);
                 }
-            }
+            } // [수정] for 루프의 닫는 괄호 '}'가 여기에 있어야 합니다.
 
-            // 모든 변경사항을 한번에 적용
+            // [수정] 모든 enemy 순회가 끝난 후 batch.commit()을 한 번만 호출합니다.
             await batch.commit();
             if (mpWasRecovered) {
                 await logAction(`💧 모든 적군이 ${MP_REGEN_PER_TURN}의 MP를 회복했습니다.`, "system");
             }
         }
         break;
-    }
+    } 
 }
             }
             
@@ -1657,9 +1635,30 @@
     // 2. 적 실행 종료 -> 다음 라운드 예고 단계로 전환
     else if (roundPhase === 'ENEMY_EXECUTION') {
         currentlyActingEnemyId = null; // 남아있는 말풍선 제거
+
+        // --- ▼ [핵심 추가] 라운드 종료 시 모든 캐릭터의 효과 지속시간 감소 ---
+        const endOfRoundBatch = writeBatch(db);
+        const livingCharacters = characters.filter(c => c.hp > 0 && c.x !== null);
+
+        for (const char of livingCharacters) {
+            const effects = char.statusEffects || [];
+            if (effects.length > 0) {
+                const updatedEffects = effects.reduce((acc, effect) => {
+                    const newTurnsRemaining = effect.turnsRemaining - 1;
+                    if (newTurnsRemaining > 0) {
+                        acc.push({ ...effect, turnsRemaining: newTurnsRemaining });
+                    } else {
+                        logAction(`⏱️ ${char.name}의 [${effect.name}] 효과가 사라졌습니다.`, "system");
+                    }
+                    return acc;
+                }, []);
+                const charRef = doc(db, 'games', gameId, 'characters', char.id);
+                endOfRoundBatch.update(charRef, { statusEffects: updatedEffects });
+            }
+        }
+        await endOfRoundBatch.commit();
         const newRound = round + 1;
 
-        // [추가] 새로운 라운드 시작을 알리는 배너 표시
         showBannerAnnouncement(`Round ${newRound}`, "적 행동 예고");
 
         // DB 상태 업데이트
@@ -2116,45 +2115,19 @@ function renderForeshadowing() {
     
     await setDoc(doc(db, 'games', gameId), { round: newRound, currentTurnIndex, currentTurnCharId }, { merge: true });
     
-    if (gameState === 'STARTED' && currentTurnChar && !reverse) {
-    const effects = currentTurnChar.statusEffects || [];
-    const updatedEffects = effects.reduce((acc, effect) => {
-        if (effect.effectType === 'damage') {
-            const damage = effect.value || 10;
-            const newHp = Math.max(0, currentTurnChar.hp - damage);
-            updateDoc(doc(db, 'games', gameId, 'characters', currentTurnChar.id), { hp: newHp });
-            logAction(`☠️ ${currentTurnChar.name}이(가) [${effect.name}] 효과로 **${damage}의 피해**를 입었습니다! (HP: ${newHp})`, "damage");
-        } else if (effect.effectType === 'heal') {
-            const heal = effect.value || 15;
-            const newHp = Math.min(currentTurnChar.maxHp, currentTurnChar.hp + heal);
-            updateDoc(doc(db, 'games', gameId, 'characters', currentTurnChar.id), { hp: newHp });
-            logAction(`🌿 ${currentTurnChar.name}이(가) [${effect.name}] 효과로 **${heal}의 HP**를 회복했습니다! (HP: ${newHp})`, "heal");
+     if (gameState === 'STARTED' && currentTurnChar && !reverse) {
+
+        const isGameOver = await checkGameEndCondition();
+        if (isGameOver) return;
+
+        const newMp = Math.min(currentTurnChar.maxMp, currentTurnChar.mp + MP_REGEN_PER_TURN);
+        if (newMp > currentTurnChar.mp) {
+            await updateDoc(doc(db, 'games', gameId, 'characters', currentTurnChar.id), { mp: newMp });
+            await logAction(`💧 ${currentTurnChar.name}이(가) **${MP_REGEN_PER_TURN} MP**를 회복했습니다.`, "system");
         }
-
-        const newTurnsRemaining = effect.turnsRemaining - 1;
-        if (newTurnsRemaining > 0) {
-            acc.push({ ...effect, turnsRemaining: newTurnsRemaining });
-        } else {
-            logAction(`⏱️ ${currentTurnChar.name}의 [${effect.name}] 효과가 사라졌습니다.`, "system");
-        }
-        return acc;
-    }, []);
-
-    await updateDoc(doc(db, 'games', gameId, 'characters', currentTurnChar.id), {
-        statusEffects: updatedEffects
-    });
-    
-    const isGameOver = await checkGameEndCondition();
-    if (isGameOver) return;
-
-    const newMp = Math.min(currentTurnChar.maxMp, currentTurnChar.mp + MP_REGEN_PER_TURN);
-    if (newMp > currentTurnChar.mp) {
-        await updateDoc(doc(db, 'games', gameId, 'characters', currentTurnChar.id), { mp: newMp });
-        await logAction(`💧 ${currentTurnChar.name}이(가) **${MP_REGEN_PER_TURN} MP**를 회복했습니다.`, "system");
+        
+        await checkAndApplyTileDamage(currentTurnChar);
     }
-    
-    await checkAndApplyTileDamage(currentTurnChar);
-}
 }
 
 
@@ -2803,7 +2776,43 @@ async function applyStatusEffect(target, effectInfo) {
 function renderSkillButtons(selectedChar) {
     skillControls.innerHTML = ''; 
 
-    // 1. 적 행동 예고 단계 UI
+    // --- ▼ [핵심 수정] 게임 준비 단계를 가장 먼저 확인하도록 코드 추가 ---
+    if (gameState === 'PREPARATION') {
+        skillControls.innerHTML = `<p class="text-sm text-gray-400 mt-4">준비 단계입니다. 캐릭터를 보드에 배치하세요.</p>`;
+        
+        // 관리자에게는 '게임 시작' 버튼을 바로 표시해줍니다.
+        if (isAdmin) {
+            skillControls.innerHTML += `
+            <div class="mt-4 space-y-2">
+                <button id="admin-start-game-btn" class="w-full bg-green-600 p-2 font-bold">⚔️ 게임 시작</button>
+            </div>`;
+        }
+        
+        // 버튼에 클릭 이벤트를 동적으로 추가합니다.
+        const startGameBtn = document.getElementById('admin-start-game-btn');
+        if(startGameBtn) {
+            startGameBtn.onclick = async () => {
+                if (gameId) {
+                    await setDoc(doc(db, 'games', gameId), { 
+                        gameState: 'STARTED',
+                        roundPhase: 'ENEMY_FORESHADOW' 
+                    }, { merge: true });
+
+                    const batch = writeBatch(db);
+                    characters.forEach(char => {
+                        const charRef = doc(db, 'games', gameId, 'characters', char.id);
+                        batch.update(charRef, { hasActedThisRound: false, nextAction: null });
+                    });
+                    await batch.commit();
+                    
+                    await logAction(`⚔️ 게임이 시작되었습니다! 라운드 1의 적 행동 예고를 시작합니다.`, "system");
+                }
+            };
+        }
+
+        return; 
+    }
+
     if (roundPhase === 'ENEMY_FORESHADOW') {
         if (isAdmin) {
             const selectedEnemy = characters.find(c => c.id === adminSelectedEnemyId);
@@ -3272,7 +3281,23 @@ function renderSkillButtons(selectedChar) {
     } else {
         highlightRange(null, null);
     }
-    
+     const adminTurnControls = document.getElementById('admin-turn-controls');
+    adminTurnControls.innerHTML = ''; // 일단 비워줍니다.
+
+    // 관리자이고, 게임이 시작됐으며, 아군 턴일 때만 버튼을 표시합니다.
+    if (isAdmin && gameState === 'STARTED' && roundPhase === 'PLAYER_PHASE') {
+        adminTurnControls.innerHTML = `
+            <button id="admin-end-player-phase-btn" class="w-full bg-yellow-600 hover:bg-yellow-700 text-black p-2 font-bold text-sm rounded-md">
+                ⏭ 아군 턴 강제 종료
+            </button>
+        `;
+
+        // 버튼에 클릭 이벤트 연결
+        document.getElementById('admin-end-player-phase-btn').onclick = async () => {
+            await logAction('⏭ 관리자가 아군 턴을 강제로 종료했습니다.', 'admin');
+            await advanceRoundPhase(); // 다음 페이즈(적 턴)로 즉시 넘어갑니다.
+        };
+    }
     updateCharacterList();
     renderCharacterSelectionOverlay();
     renderForeshadowing();
@@ -4244,13 +4269,19 @@ async function handleCombatClick(e) {
         return;
     }
 
-    // 2. 적 행동 실행 단계 로직 (기존과 동일)
     if (roundPhase === 'ENEMY_EXECUTION' && isAdmin) {
-        const selectedCharacter = characters.find(c => c.id === selectedCharacterId);
+          const selectedCharacter = characters.find(c => c.id === selectedCharacterId);
         if (selectedCharacter && !clickedChar && !cell.classList.contains('combat-range')) {
+            if (selectedCharActionPhase === 'ACTION' && preMovePosition) {
+                await updateDoc(doc(db, 'games', gameId, 'characters', selectedCharacter.id), {
+                    x: preMovePosition.x,
+                    y: preMovePosition.y
+                });
+                await logAction(`↩️ ${selectedCharacter.name}의 수동 이동이 취소되었습니다.`, "system");
+            }
             selectedCharacterId = null;
             selectedSkill = null;
-            render();
+            render(); 
             return;
         }
         if (selectedCharacter) {
