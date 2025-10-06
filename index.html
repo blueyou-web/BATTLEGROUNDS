@@ -2476,7 +2476,7 @@ async function applyStatusEffect(target, effectInfo) {
     
     if (!selectedCharacter || !preMovePosition) return;
     await updateDoc(doc(db, 'games', gameId, 'characters', selectedCharacter.id), { x: preMovePosition.x, y: preMovePosition.y });
-    await logAction(`↩️ ${selectedCharacter.name}이(가) 이동을 취소했습니다.`, "system");
+    //await logAction(`↩️ ${selectedCharacter.name}이(가) 이동을 취소했습니다.`, "system");
     selectedCharActionPhase = 'MOVE'; // <-- [수정] 이동 단계로 되돌림
     selectedSkill = 'move';
     render();
