@@ -2714,10 +2714,10 @@ async function applyStatusEffect(target, effectInfo) {
     const canSelect = (isMyTurn && gameState === 'STARTED');
 
     if (isPlaced && !isDead) {
-        if (isAdmin) {
-            previewCharacterId = char.id;
-            selectedCharacterId = null; 
-        } else if (canSelect) {
+                    if (isAdmin) {
+                        // previewCharacterId = char.id;       // 이 부분을 주석 처리하거나
+                        // selectedCharacterId = null;          // 삭제합니다.
+                    } else if (canSelect) {
             selectedCharacterId = char.id;
             turnPhase = 'MOVE';
             selectedSkill = 'move';
