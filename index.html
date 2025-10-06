@@ -3110,8 +3110,19 @@ function renderSkillButtons(selectedChar) {
             token.className = 'character-token';
             token.style.width = `${char.size * 100}%`;
             token.style.height = `${char.size * 100}%`;
-            const isSelectedForMove = char.id === selectedCharacterId && selectedCharActionPhase === 'MOVE';
-            if (isSelectedForMove && char.size > 1) {
+            const isMyLargeCharMoving = (char.id === selectedCharacterId && selectedSkill === 'move' && char.size > 1);
+
+            // 조건 2: 내가 '공격' 스킬을 선택했고, 지금 그리는 캐릭터가 '공격 대상이 될 수 있는 큰 적'일 때 (새 기능)
+            let isTargetingLargeEnemy = false;
+            const attacker = characters.find(c => c.id === selectedCharacterId);
+            const currentSkill = SKILLS[selectedSkill];
+            // 공격자가 있고, 선택한 스킬이 'Attack' 카테고리이며, 현재 그리는 캐릭터가 1보다 큰 다른 타입(적)일 경우
+            if (attacker && currentSkill?.category === 'Attack' && char.size > 1 && char.type !== attacker.type) {
+                isTargetingLargeEnemy = true;
+            }
+
+            // 둘 중 하나라도 해당되면 반투명 및 클릭 통과 효과 적용
+            if (isMyLargeCharMoving || isTargetingLargeEnemy) {
                 token.classList.add('token-click-through');
             }
             if (char.type === 'ENEMY') token.classList.add('enemy-token');
