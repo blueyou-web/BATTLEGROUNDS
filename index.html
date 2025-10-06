@@ -1531,26 +1531,74 @@
         break;
     } 
         
-    case 'ENEMY_EXECUTION':
+    case 'ENEMY_EXECUTION': { // 블록 스코프로 감싸기
         showBannerAnnouncement(`Round ${round}`, "적군 턴 시작");
         const livingEnemies = characters.filter(c => c.type === 'ENEMY' && c.hp > 0 && c.x !== null);
         if (livingEnemies.length > 0) {
             const batch = writeBatch(db);
-            let mpRecovered = false;
-            livingEnemies.forEach(enemy => {
+            let mpWasRecovered = false;
+
+            for (const enemy of livingEnemies) {
+                const charRef = doc(db, 'games', gameId, 'characters', enemy.id);
+                let updates = {};
+
+                // 1. MP 회복 로직 (기존과 동일)
                 const newMp = Math.min(enemy.maxMp, enemy.mp + MP_REGEN_PER_TURN);
                 if (newMp > enemy.mp) {
-                    const charRef = doc(db, 'games', gameId, 'characters', enemy.id);
-                    batch.update(charRef, { mp: newMp });
-                    mpRecovered = true;
+                    updates.mp = newMp;
+                    mpWasRecovered = true;
                 }
-            });
-            if (mpRecovered) {
-                await batch.commit();
+
+                // --- ▼ 상태 효과 처리 로직 (이 부분이 핵심 추가사항) ---
+                const effects = enemy.statusEffects || [];
+                if (effects.length > 0) {
+                    let finalHp = enemy.hp;
+                    let hpChanged = false;
+
+                    const updatedEffects = effects.reduce((acc, effect) => {
+                        // 지속 피해/회복 효과 처리
+                        if (effect.effectType === 'heal') {
+                            const healAmount = effect.value || 15;
+                            finalHp = Math.min(enemy.maxHp, finalHp + healAmount);
+                            hpChanged = true;
+                            logAction(`🌿 ${enemy.name}이(가) [${effect.name}] 효과로 **${healAmount} HP**를 회복했습니다!`, "heal");
+                        } else if (effect.effectType === 'damage') {
+                            const damageAmount = effect.value || 10;
+                            finalHp = Math.max(0, finalHp - damageAmount);
+                            hpChanged = true;
+                            logAction(`☠️ ${enemy.name}이(가) [${effect.name}] 효과로 **${damageAmount} 피해**를 입었습니다!`, "damage");
+                        }
+
+                        // 모든 효과의 지속시간을 1씩 감소
+                        const newTurnsRemaining = effect.turnsRemaining - 1;
+                        if (newTurnsRemaining > 0) {
+                            acc.push({ ...effect, turnsRemaining: newTurnsRemaining });
+                        } else {
+                            logAction(`⏱️ ${enemy.name}의 [${effect.name}] 효과가 사라졌습니다.`, "system");
+                        }
+                        return acc;
+                    }, []);
+                    
+                    updates.statusEffects = updatedEffects;
+                    if (hpChanged) {
+                        updates.hp = finalHp;
+                    }
+                }
+                // --- ▲ 상태 효과 처리 로직 종료 ---
+                
+                if (Object.keys(updates).length > 0) {
+                    batch.update(charRef, updates);
+                }
+            }
+
+            // 모든 변경사항을 한번에 적용
+            await batch.commit();
+            if (mpWasRecovered) {
                 await logAction(`💧 모든 적군이 ${MP_REGEN_PER_TURN}의 MP를 회복했습니다.`, "system");
             }
         }
         break;
+    }
 }
             }
             
@@ -3112,23 +3160,19 @@ function renderSkillButtons(selectedChar) {
             token.style.height = `${char.size * 100}%`;
             const isMyLargeCharMoving = (char.id === selectedCharacterId && selectedSkill === 'move' && char.size > 1);
 
-            // 조건 2: 내가 '공격' 스킬을 선택했고, 지금 그리는 캐릭터가 '공격 대상이 될 수 있는 큰 적'일 때 (새 기능)
             let isTargetingLargeEnemy = false;
             const attacker = characters.find(c => c.id === selectedCharacterId);
             const currentSkill = SKILLS[selectedSkill];
-            // 공격자가 있고, 선택한 스킬이 'Attack' 카테고리이며, 현재 그리는 캐릭터가 1보다 큰 다른 타입(적)일 경우
             if (attacker && currentSkill?.category === 'Attack' && char.size > 1 && char.type !== attacker.type) {
                 isTargetingLargeEnemy = true;
             }
 
-            // 둘 중 하나라도 해당되면 반투명 및 클릭 통과 효과 적용
             if (isMyLargeCharMoving || isTargetingLargeEnemy) {
                 token.classList.add('token-click-through');
             }
             if (char.type === 'ENEMY') token.classList.add('enemy-token');
             if (char.id === selectedCharacterId || char.id === adminSelectedEnemyId) token.classList.add('selected-character');
 
-            // ✅ [수정 핵심 1] 행동 가능한 '아군' 표시 (모두에게 보임)
             const isActionablePC = char.type === 'PC' && gameState === 'STARTED' && roundPhase === 'PLAYER_PHASE' && !char.hasActedThisRound;
             if (isActionablePC) {
                 token.classList.add('current-turn-glow');
@@ -3138,8 +3182,7 @@ function renderSkillButtons(selectedChar) {
                 token.appendChild(marker);
             }
 
-            // ✅ [수정 핵심 2] 행동을 앞둔 '적군' 표시 (모두에게 보임)
-            // 이 로직에는 'isAdmin' 체크가 전혀 없습니다.
+        
             const isWaitingEnemy = char.type === 'ENEMY' && roundPhase === 'ENEMY_EXECUTION' && char.nextAction != null;
             if (isWaitingEnemy) {
                 token.classList.add('enemy-turn-glow'); // 붉은색 오라
@@ -3149,7 +3192,6 @@ function renderSkillButtons(selectedChar) {
                 token.appendChild(marker);
             }
             
-            // 토큰 기본 정보 설정 (HP, 이미지 등)
             if (char.hp <= 0) token.style.filter = 'grayscale(100%) opacity(0.5)';
             token.dataset.charId = char.id;
             if(char.imageUrl) { 
@@ -3167,7 +3209,6 @@ function renderSkillButtons(selectedChar) {
             barContainer.innerHTML = `<div class="hp-bar"><div class="hp-fill" style="width: ${hpPercent}%;"></div></div><div class="mp-bar"><div class="mp-fill" style="width: ${mpPercent}%;"></div></div>`;
             token.appendChild(barContainer);
             
-            // ✅ [수정 핵심 3] '현재 행동 중인 적'에게만 말풍선 표시 (모두에게 보임)
             if (char.id === actingEnemyId && char.nextAction) {
                 const bubble = document.createElement('div');
                 bubble.className = 'action-speech-bubble';
@@ -3184,7 +3225,6 @@ function renderSkillButtons(selectedChar) {
                         iconEl.className = 'status-effect-icon';
                         iconEl.innerHTML = icon;
                         iconEl.title = `${effect.name} (${effect.turnsRemaining}턴 남음)`;
-                        // 여러 개의 아이콘이 겹치지 않도록 오른쪽으로 살짝씩 밀어냅니다.
                         iconEl.style.right = `${-5 + (index * 20)}px`;
                         token.appendChild(iconEl);
                     }
@@ -3195,7 +3235,6 @@ function renderSkillButtons(selectedChar) {
         }
     });
 
-    // 이하 나머지 render 함수 로직은 기존과 동일
     const turnStatusDiv = document.getElementById('current-turn-char');
     const turnStatusTitle = document.querySelector('#turn-status p');
 
@@ -3228,7 +3267,6 @@ function renderSkillButtons(selectedChar) {
     renderForeshadowing();
 }
 
-    // NEW: Function to remove character placement
     async function removeCharacterPlacement(charId, charName) {
         if (gameId) {
             await updateDoc(doc(db, 'games', gameId, 'characters', charId), { x: null, y: null });
