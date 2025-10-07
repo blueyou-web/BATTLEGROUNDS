@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>인터랙티브 게임 보드 (Firebase 연동)</title>
+    <title>인터랙티브 게임 보드</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,19 +33,15 @@
             --bg-selection-overlay: linear-gradient(180deg, var(--bg-primary) 0%, rgba(36, 36, 36, 0.7) 100%);
             --mp-color: #3B82F6;
             
-            /* Custom Scrollbar Colors (Dark Mode) */
             --scrollbar-thumb: var(--accent-primary);
             --scrollbar-track: #2d2d2d;
 
-            /* Skill Button Glow/Ring Color */
             --skill-ring-color: rgba(212, 183, 131, 0.8);
 
-            /* Turn Box Style */
-            --turn-box-bg: rgba(55, 65, 81, 0.5); /* Semi-transparent tertiary bg */
+            --turn-box-bg: rgba(55, 65, 81, 0.5); 
             --turn-box-border: var(--accent-primary);
             --summary-box-bg: rgba(212, 183, 131, 0.1);
 
-            /* NEW: Gradients for numbers */
             --gradient-start: #ffffff; 
             --gradient-end: var(--accent-primary);
             --pc-color: #4ADE80;
@@ -236,25 +232,20 @@
             border: 2px solid transparent;
         }
 
-        .character-token.current-turn-glow { /* NEW Class for Token Glow */
-            /* 기존 box-shadow와 animation 속성을 제거합니다. */
-            /* 이 클래스는 이제 :before 가상 요소를 만들기 위한 식별자로만 사용됩니다. */
-            border-color: var(--turn-highlight-color); /* 테두리 색상 강조는 유지할 수 있습니다. */
+        .character-token.current-turn-glow { 
+            border-color: var(--turn-highlight-color); 
         }
-        /* NEW: Glow effect moved to a pseudo-element to appear behind the token */
         .character-token.current-turn-glow::before {
-            content: ''; /* 가상 요소 생성을 위해 필수 */
+            content: ''; 
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            border-radius: 50%; /* 부모 토큰과 똑같은 원형 */
+            border-radius: 50%; 
             
-            /* z-index를 -1로 주어 토큰 이미지(부모)보다 뒤에 위치시킴 */
             z-index: -1; 
             
-            /* 1단계에서 수정한 애니메이션을 여기에 적용 */
             animation: turn-glow 3s infinite ease-in-out;
         }
         .character-token.enemy-token {
@@ -812,9 +803,7 @@
         #enemy-count.summary-count {
             background-image: linear-gradient(180deg, var(--gradient-start), var(--enemy-color));
         }
-       /* --- 아래 코드로 기존 턴 알림 CSS를 모두 교체해주세요 --- */
 
-        /* NEW: 화면을 어둡게 만드는 백드롭 스타일 */
         #turn-announcement-backdrop {
             display: none; /* 평소에는 숨김 */
             position: fixed;
@@ -1196,7 +1185,7 @@
     let unsubscribeChars = null;
     let unsubscribeSettings = null;
     let unsubscribeLogs = null;
-    let previousTurnCharId = null; // <-- 이 줄을 추가하세요
+    let previousTurnCharId = null; 
     let isBoardInitialized = false; 
     let selectedSkill = null; 
     let currentTurnIndex = 0;
@@ -1245,7 +1234,7 @@
     let isMapEditMode = false; // Flag for admin map editing
     let currentTileType = 'normal'; // The tile type the admin is currently placing
     let boardBackgroundImage = ''; // NEW: Background image URL
-    let pageBackgroundImage = ''; // <-- 이 줄을 추가하세요
+    let pageBackgroundImage = ''; 
     const DAMAGE_TILE_DAMAGE = 10;
     const MP_REGEN_PER_TURN = 10; // New: Mana regeneration per turn
 
@@ -1443,16 +1432,13 @@
 
             const turnCharId = data.currentTurnCharId;
 
-            // ✨ [핵심 수정] 아래 한 줄을 추가하여 actingEnemyId 값을 실시간으로 받아옵니다.
             actingEnemyId = data.actingEnemyId || null;
 
             if (gameState === 'STARTED' && oldRoundPhase !== roundPhase) {
-                // --- ▼ [핵심 수정] 단계 전환 시 선택 상태 초기화 ---
                 selectedCharacterId = null;
                 previewCharacterId = null;
                 selectedSkill = null;
                 adminSelectedEnemyId = null;
-                // --- ▲ 수정 종료 ---
 
                 switch (roundPhase) {
     case 'ENEMY_FORESHADOW':
@@ -1483,14 +1469,12 @@
 
                 const effects = pc.statusEffects || [];
                 if (effects.length > 0) {
-                    // 행동 불가 상태인지 확인하여 행동한 것으로 처리
                     const isStunned = effects.some(effect => effect.id === 'stunned');
                     if (isStunned) {
                         logAction(`💫 ${pc.name}은(는) [행동 불가] 상태이므로 턴이 자동으로 넘어갑니다.`, "system");
                         updates.hasActedThisRound = true;
                     }
 
-                    // [수정] 지속 피해/회복 효과만 적용 (지속시간 감소 로직 완전히 제거)
                     let finalHp = pc.hp;
                     let hpChanged = false;
                     effects.forEach(effect => {
@@ -1698,11 +1682,9 @@ async function determineEnemyNextActions() {
         });
 
         if (closestTarget) {
-            // 2. 사용할 공격 스킬 찾기 (첫 번째 공격 스킬 사용)
             const attackSkillId = enemy.skills.find(id => SKILLS[id]?.category === 'Attack');
 
             if (attackSkillId) {
-                // 3. DB에 업데이트할 내용 준비
                 const enemyRef = doc(db, 'games', gameId, 'characters', enemy.id);
                 batch.update(enemyRef, {
                     nextAction: {
@@ -1714,7 +1696,6 @@ async function determineEnemyNextActions() {
         }
     });
 
-    // 4. 준비된 모든 업데이트를 한 번에 DB에 전송
     await batch.commit();
     await logAction("🤖 AI가 모든 적의 행동 계획을 수립했습니다.", "system");
 }
@@ -1736,7 +1717,6 @@ async function executeSingleEnemyAction(enemyId) {
         const attackRange = skill.range;
         
         if (getDistance(enemy, target) > attackRange) {
-            // (이동 로직은 executeEnemyActions와 동일)
             let minMoveDistance = Infinity;
             for (let dy = -moveRange; dy <= moveRange; dy++) {
                 for (let dx = -moveRange; dx <= moveRange; dx++) {
@@ -1783,18 +1763,15 @@ async function executeSingleEnemyAction(enemyId) {
     async function executeEnemyActions() {
     await logAction(`🔥 적들이 행동을 개시합니다!`, "system");
 
-    // --- ▼ [핵심 추가] 행동 불가 상태인 적을 찾아 로그를 남깁니다. ---
     const stunnedEnemies = characters.filter(c => c.type === 'ENEMY' && c.hp > 0 && c.statusEffects?.some(e => e.id === 'stunned'));
     for (const enemy of stunnedEnemies) {
         await logAction(`💫 ${enemy.name}은(는) [행동 불가] 상태이므로 행동하지 못합니다.`, "system");
     }
-    // --- ▲ [핵심 추가] 로직 종료 ---
 
     // [수정] 행동할 적 목록을 만들 때, 행동 불가(stunned) 상태인 적은 제외합니다.
     const enemiesToAct = characters.filter(c => c.type === 'ENEMY' && c.hp > 0 && c.nextAction && !c.statusEffects?.some(e => e.id === 'stunned'));
 
     for (const enemy of enemiesToAct) {
-        // ✨ [핵심 수정] Firestore의 actingEnemyId를 업데이트하여 모든 클라이언트에 동기화
         await updateDoc(doc(db, 'games', gameId), { actingEnemyId: enemy.id });
         await delay(700);
 
@@ -1856,7 +1833,6 @@ async function executeSingleEnemyAction(enemyId) {
         
         await updateDoc(doc(db, 'games', gameId, 'characters', enemy.id), { nextAction: null });
         
-        // ✨ [핵심 수정] 적 행동이 끝나면 Firestore의 actingEnemyId를 null로 초기화
         await updateDoc(doc(db, 'games', gameId), { actingEnemyId: null });
     }
 
@@ -1878,7 +1854,6 @@ function renderForeshadowing() {
     svgLayer.style.height = `${boardRect.height}px`;
     svgLayer.innerHTML = ''; 
     
-    // ✨ [핵심 수정] 함수가 시작될 때, 이전에 표시된 모든 위협 범위를 깨끗하게 지웁니다.
     document.querySelectorAll('.enemy-threat-range').forEach(cell => cell.classList.remove('enemy-threat-range'));
 
     const cellWidth = boardRect.width / BOARD_SIZE;
@@ -2206,8 +2181,6 @@ function renderForeshadowing() {
                 // 캐릭터가 차지하는 모든 칸(size x size)을 순회합니다.
                 for (let ex = 0; ex < size; ex++) {
                     for (let ey = 0; ey < size; ey++) {
-                        // 캐릭터가 차지하는 칸 중 하나라도 스킬 범위(affectedCells)에 포함되면,
-                        // 대상을 'targets'에 추가하고 이 캐릭터에 대한 검사를 중단합니다.
                         if (affectedCells.has(`${char.x + ex},${char.y + ey}`)) {
                             targets.add(char);
                             return; // forEach 루프에서 현재 반복을 종료하고 다음 캐릭터로 넘어갑니다.
@@ -2425,7 +2398,6 @@ async function applyStatusEffect(target, effectInfo) {
     const skill = SKILLS[skillId];
     if (!skill || !target) return;
 
-    // ✨ 1. actionSucceeded와 affectedTargets를 함수 상단으로 이동
     let actionSucceeded = false;
     let affectedTargets = [];
 
@@ -2436,7 +2408,6 @@ async function applyStatusEffect(target, effectInfo) {
         }
 
         if (skill.isAoe) {
-            // ✨ 2. 광역 공격 로직 수정: 실제 피해를 입히도록 수정
             const targetsInAoe = findTargetsInAoe(target.x, target.y, skill.aoeRange, skill.aoeShape, skill.type, attacker.type);
             for (const aoeTarget of targetsInAoe) {
                 const success = await applyDamage(attacker, aoeTarget, skillId);
@@ -2467,7 +2438,6 @@ async function applyStatusEffect(target, effectInfo) {
         actionSucceeded = true; 
     }
     
-    // ✨ 3. 상태 효과 적용 로직 수정: actionSucceeded 여부와 무관하게 올바른 대상에게 적용
     if (skill.appliesEffect && affectedTargets.length > 0) {
         for (const finalTarget of affectedTargets) {
             // 💥 여기가 핵심: attacker가 아닌 finalTarget에게 효과를 적용합니다.
@@ -2641,11 +2611,9 @@ async function applyStatusEffect(target, effectInfo) {
         return; 
     }
 
-    // 중복 선언이었던 const skill = SKILLS[skillId]; 줄을 삭제합니다.
     const range = (skill.id === 'move' && char.moveRange !== undefined) ? char.moveRange : skill.range;
     const size = char.size || 1;
     
-    // 중복 선언이었던 const isMove = skill.id === 'move'; 줄을 삭제합니다.
     const isAttack = skill.category === 'Attack';
     const isHealOrSupport = skill.category === 'Heal' || skill.category === 'Support';
     
@@ -2741,8 +2709,8 @@ async function applyStatusEffect(target, effectInfo) {
 
     if (isPlaced && !isDead) {
                     if (isAdmin) {
-                        // previewCharacterId = char.id;       // 이 부분을 주석 처리하거나
-                        // selectedCharacterId = null;          // 삭제합니다.
+                        // previewCharacterId = char.id;      
+                        // selectedCharacterId = null;          
                     } else if (canSelect) {
             selectedCharacterId = char.id;
             turnPhase = 'MOVE';
@@ -2770,11 +2738,9 @@ async function applyStatusEffect(target, effectInfo) {
 function renderSkillButtons(selectedChar) {
     skillControls.innerHTML = ''; 
 
-    // --- ▼ [핵심 수정] 게임 준비 단계를 가장 먼저 확인하도록 코드 추가 ---
     if (gameState === 'PREPARATION') {
         skillControls.innerHTML = `<p class="text-sm text-gray-400 mt-4">준비 단계입니다. 캐릭터를 보드에 배치하세요.</p>`;
         
-        // 관리자에게는 '게임 시작' 버튼을 바로 표시해줍니다.
         if (isAdmin) {
             skillControls.innerHTML += `
             <div class="mt-4 space-y-2">
@@ -2782,7 +2748,6 @@ function renderSkillButtons(selectedChar) {
             </div>`;
         }
         
-        // 버튼에 클릭 이벤트를 동적으로 추가합니다.
         const startGameBtn = document.getElementById('admin-start-game-btn');
         if(startGameBtn) {
             startGameBtn.onclick = async () => {
@@ -2812,14 +2777,12 @@ function renderSkillButtons(selectedChar) {
             const selectedEnemy = characters.find(c => c.id === adminSelectedEnemyId);
             let skillButtonsHtml = '';
 
-            // [추가] 선택된 적이 있다면 스킬 버튼들을 생성합니다.
             if (selectedEnemy) {
                 skillButtonsHtml += `<h4 class="text-md font-bold text-yellow-300 mt-3 mb-2">사용할 스킬 선택:</h4><div class="flex flex-wrap gap-2">`;
                 selectedEnemy.skills.forEach(id => {
                     const skill = SKILLS[id];
                     if (skill) {
                         const isSelected = adminForeshadowSkillId === id;
-                        // 스킬 버튼에 선택 시 시각적 효과(ring)를 주기 위한 클래스를 추가합니다.
                         skillButtonsHtml += `<button data-skill-id="${id}" class="skill-btn foreshadow-skill-btn ${isSelected ? 'ring-2 ring-red-400' : ''} p-2 flex items-center flex-col text-xs font-semibold">
                                         ${skill.icon} ${skill.name}
                                       </button>`;
@@ -2961,7 +2924,6 @@ function renderSkillButtons(selectedChar) {
     
     const isActionablePC = selectedChar && selectedChar.type === 'PC' && !selectedChar.hasActedThisRound;
     
-    // 💡 [수정] 관리자가 아군을 대신 조작하는 경우와 일반 유저의 경우를 하나로 합쳐서 처리합니다.
     if (isActionablePC && (canControlCharacter(selectedChar.id) || (isAdmin && selectedChar.type === 'PC'))) {
         let html;
         if (isAdmin) {
@@ -3012,7 +2974,6 @@ function renderSkillButtons(selectedChar) {
         });
         return;
     } else {
-        // 💡 [추가] 관리자가 미리보기 중일 때의 UI
         const isPreviewingOtherChar = isAdmin && selectedChar && selectedChar.type === 'PC';
         if (isPreviewingOtherChar) {
             let html = `<h3 class="text-lg font-bold mb-2 text-cyan-400">👀 ${selectedChar.name} 미리보기</h3>`;
@@ -3071,7 +3032,6 @@ function renderSkillButtons(selectedChar) {
         const isActionablePC = roundPhase === 'PLAYER_PHASE' && char.type === 'PC' && !char.hasActedThisRound && char.hp > 0 && char.x !== null;
 
         const charItem = document.createElement('div');
-        // --- ▼ [핵심 수정] 'turn-highlight' 클래스 관련 로직 완전히 제거 ---
         charItem.className = `p-2 rounded-md flex flex-col cursor-pointer ${char.id === selectedCharacterId ? 'ring-2 ring-green-400' : 'hover:bg-gray-800'}`;
         
         let statusColor = char.hp <= 0 ? 'text-gray-500' : (char.type === 'ENEMY' ? 'text-red-400' : 'text-gray-300');
@@ -3091,7 +3051,6 @@ function renderSkillButtons(selectedChar) {
         
         charItem.onclick = () => {
             if ((isActionablePC && canControlCharacter(char.id)) || (isAdmin && char.type === 'PC')) {
-                // handleCombatClick을 직접 호출하여 로직 일원화
                 const fakeEvent = { target: document.querySelector(`[data-char-id="${char.id}"]`) };
                 handleCombatClick(fakeEvent);
             }
@@ -3129,22 +3088,15 @@ function renderSkillButtons(selectedChar) {
             await charUpdateBatch.commit();
         }
 
-        // 2. Firestore의 `deleteField`를 사용해 게임 문서의 skills 맵에서 해당 스킬 필드를 직접 제거합니다.
-        // 이것이 전체 스킬 맵을 다시 보내는 것보다 훨씬 효율적입니다.
+
         const gameDocRef = doc(db, 'games', gameId);
         await updateDoc(gameDocRef, {
             [`skills.${skillId}`]: deleteField()
         });
         
-        // 3. 로그를 남기고, 선택된 스킬이었다면 선택을 해제합니다.
         await logAction(`🔥 관리자가 **${skillName}** 스킬을 삭제했습니다.`, "admin");
         if (selectedSkill === skillId) selectedSkill = null;
         
-        // 💡 중요: 수동으로 모달을 다시 열지 않습니다.
-        // onSnapshot 리스너가 데이터 변경을 감지하고, 열려있는 관리자 창의 내용을 자동으로 갱신할 것입니다.
-        // openAdminModal(); // <-- 이 줄을 제거하는 것이 핵심입니다.
-        
-        // 대신 사용자에게 작업이 완료되었음을 알리고 모달을 닫아줍니다.
         closeModal('admin-modal');
         showCustomModal("삭제 완료", `**${skillName}** 스킬이 성공적으로 삭제되었습니다.`, [{ text: "확인", class: "bg-green-600" }]);
     }
@@ -3176,7 +3128,6 @@ function renderSkillButtons(selectedChar) {
     characters.filter(char => char.x !== null).forEach(char => {
         const cell = gameBoard.querySelector(`.cell[data-x='${char.x}'][data-y='${char.y}']`);
         if (cell) {
-            // 미리보기 "유령" 토큰을 그리는 로직
             if (char.id === previewCharacterId) {
                 const ghostToken = document.createElement('div');
                 ghostToken.className = `character-token ghost-preview-token ${char.type === 'ENEMY' ? 'enemy-token' : ''}`;
@@ -3616,9 +3567,6 @@ async function resetAllCharacterStats() {
     async function resetAllGameData() {
         if (!gameId) return;
 
-        // 👇 [수정] 기존의 두 함수 호출을 새로운 초기화 함수로 교체합니다.
-        // await resetBoardPositions();
-        // await seedInitialCharacters(gameId);
         await resetAllCharacterStats();
 
         await setDoc(doc(db, 'games', gameId, 'board', 'tiles'), { tiles: {} });
@@ -3629,13 +3577,10 @@ async function resetAllCharacterStats() {
             round: 1 
         }, { merge: true });
 
-        // 👇 [수정] 로그 메시지를 더 명확하게 변경합니다.
         await logAction(`⚠️ 관리자가 전체 게임을 초기화했습니다. 모든 캐릭터의 HP가 회복되고 재배치를 기다립니다.`, "admin");
     }
 
-    // --- Map Edit Close Functions (Refactored) ---
-    
-    // 1. 맵 편집 모드를 완전히 끄는 함수 (isMapEditMode = false)
+
     function confirmExitMapEditMode() {
         isMapEditMode = false; // Mode OFF
         closeModal('map-edit-modal');
@@ -3643,20 +3588,17 @@ async function resetAllCharacterStats() {
         updateAuthStatus();
     }
 
-    // 2. 맵 편집 팝업만 일시적으로 숨기는 함수 (isMapEditMode = true 유지)
     function hideMapEditModalTemporarily() {
         closeModal('map-edit-modal');
-        // isMapEditMode 상태는 변경하지 않습니다.
         updateAuthStatus();
     }
     
-    // 맵 편집 모드 ON
     function openMapEditModal() {
         if (!isAdmin || gameState !== 'PREPARATION') {
              showCustomModal("권한 오류", "맵 편집은 관리자만, 그리고 게임 준비 단계에서만 가능합니다.", [{text:"확인", class:"bg-red-600"}]);
              return;
         }
-        // 맵 편집 모드를 열 때 관리자 패널을 닫습니다.
+
         closeModal('admin-modal'); 
 
         isMapEditMode = true;
@@ -3800,12 +3742,9 @@ modalHtml += `<div class="mb-8 p-4 border border-gray-700 rounded-md">
             ${getNewCharacterFormHtml()}
         </div>`;
 
-        // --- 2. 완성된 HTML을 화면에 딱 한 번만 그립니다. ---
+
         container.innerHTML = modalHtml;
 
-        // --- 3. 화면에 모든 요소가 그려진 후에, 모든 이벤트 리스너를 연결합니다. ---
-
-        // 아코디언 기능 연결
         const skillListContainer = container.querySelector('#admin-skill-list');
         if (skillListContainer) {
             skillListContainer.addEventListener('click', e => {
@@ -3820,7 +3759,6 @@ modalHtml += `<div class="mb-8 p-4 border border-gray-700 rounded-md">
             });
         }
         
-        // [추가] 설정 저장/불러오기 버튼 기능 연결
         document.getElementById('save-settings-btn').onclick = saveSettingsToFile;
         document.getElementById('load-settings-btn').onclick = () => {
             document.getElementById('load-settings-input').click();
@@ -3830,28 +3768,23 @@ modalHtml += `<div class="mb-8 p-4 border border-gray-700 rounded-md">
             if (file) {
                 loadSettingsFromFile(file);
             }
-            // 같은 파일을 다시 로드할 수 있도록 값을 초기화합니다.
             e.target.value = null;
         };
         
-        // 나머지 모든 버튼 기능 연결
         document.getElementById('close-admin-modal-btn').onclick = () => closeModal('admin-modal');
         document.getElementById('set-prep-phase-btn').onclick = async () => {
             if (gameId) {
-                // 1. 게임의 핵심 상태를 '준비 단계'로 설정하고 roundPhase를 초기화합니다.
                 await updateDoc(doc(db, 'games', gameId), { 
                     gameState: 'PREPARATION', 
-                    roundPhase: null, // ✨ 전조선이 그려지는 원인인 roundPhase를 확실히 제거합니다.
+                    roundPhase: null, 
                     currentTurnIndex: 0, 
                     currentTurnCharId: null, 
                     round: 1 
                 });
 
-                // 2. ✨ 모든 캐릭터에 남아있는 행동 계획(nextAction)을 한번에 삭제합니다.
                 const batch = writeBatch(db);
                 characters.forEach(char => {
                     const charRef = doc(db, 'games', gameId, 'characters', char.id);
-                    // deleteField()는 필드 자체를 문서에서 깔끔하게 제거합니다.
                     batch.update(charRef, { nextAction: deleteField() });
                 });
                 await batch.commit();
@@ -3862,13 +3795,11 @@ modalHtml += `<div class="mb-8 p-4 border border-gray-700 rounded-md">
         };
         document.getElementById('set-start-phase-btn').onclick = async () => {
     if (gameId) {
-        // 👇 gameState와 함께 roundPhase를 ENEMY_FORESHADOW로 설정
         await setDoc(doc(db, 'games', gameId), { 
             gameState: 'STARTED',
             roundPhase: 'ENEMY_FORESHADOW' 
         }, { merge: true });
 
-        // 모든 캐릭터의 행동 여부 초기화
         const batch = writeBatch(db);
         characters.forEach(char => {
             const charRef = doc(db, 'games', gameId, 'characters', char.id);
@@ -3877,7 +3808,6 @@ modalHtml += `<div class="mb-8 p-4 border border-gray-700 rounded-md">
         await batch.commit();
         
         await logAction(`⚔️ 게임이 시작되었습니다! 라운드 1의 적 행동 예고를 시작합니다.`, "system");
-        // showBannerAnnouncement("FIGHT!", "게임 시작", '2rem', '4rem');
     }
 };
 document.getElementById('force-player-phase-btn').onclick = async () => {
@@ -3956,7 +3886,6 @@ document.getElementById('force-enemy-phase-btn').onclick = async () => {
                     aoeShape: document.getElementById(`admin-aoeShape-${id}`).value
                 };
                 
-                // [수정] 존재하지 않는 checkbox 대신, select의 값 유무로 효과 적용 여부 판단
                 const effectId = document.getElementById(`admin-effect-id-${id}`).value;
                 if (effectId) {
                     const effectInfo = PREDEFINED_EFFECTS[effectId];
@@ -4030,7 +3959,6 @@ document.getElementById('force-enemy-phase-btn').onclick = async () => {
         adminModal.classList.remove('hidden');
     }
 
-    // --- Helper functions for generating HTML forms to keep openAdminModal clean ---
     function getSkillEditFormHtml(s) {
     const effectOptions = Object.values(PREDEFINED_EFFECTS).map(eff => 
         `<option value="${eff.id}" ${s.appliesEffect?.id === eff.id ? 'selected' : ''}>${eff.name}</option>`
@@ -4198,31 +4126,24 @@ document.getElementById('force-enemy-phase-btn').onclick = async () => {
         adminModal.classList.remove('hidden');
     }
 
-    // --- Event Listeners ---
     
     function canControlCharacter(charId) {
     const char = characters.find(c => c.id === charId);
     if (!char || char.hp <= 0) return false;
 
-    // 관리자인 경우
     if (isAdmin) {
-        // 적 행동 예고 단계에서는 '적'만 제어 가능
         if (roundPhase === 'ENEMY_FORESHADOW' && char.type === 'ENEMY') {
             return true;
         }
-        // 플레이어 행동 단계에서는 '행동하지 않은 아군'만 제어 가능
         if (roundPhase === 'PLAYER_PHASE' && char.type === 'PC' && !char.hasActedThisRound) {
             return true;
         }
-        
-        // ✨ [핵심 수정] 적 턴 수동 조작을 위해 아래 블록을 추가합니다.
-        // '적 행동 실행' 단계에서는 관리자가 자유롭게 토큰을 클릭하여 움직일 수 있도록 허용합니다.
+
         if (roundPhase === 'ENEMY_EXECUTION' && isAdminMoveAllowed) {
             return true;
         }
     }
 
-    // 일반 플레이어인 경우
     if (roundPhase === 'PLAYER_PHASE' && loggedInCharId === charId && !char.hasActedThisRound) {
         return true;
     }
@@ -4231,14 +4152,12 @@ document.getElementById('force-enemy-phase-btn').onclick = async () => {
 }
 
     function isCellOccupied(targetX, targetY, movingCharId = null) {
-        // Check for character occupancy
         const isCharOccupied = characters.some(char => {
             if (char.id === movingCharId || char.x === null) return false;
             const size = char.size || 1;
             return targetX >= char.x && targetX < (char.x + size) && targetY >= char.y && targetY < (char.y + size);
         });
 
-        // Check for obstacle tile
         const tileKey = `${targetX},${targetY}`;
         const isObstacle = boardTiles[tileKey]?.type === 'obstacle';
         
@@ -4348,56 +4267,46 @@ async function handleCombatClick(e) {
         return;
     }
 
-    // 3. ✨✨✨ 아군 턴 로직 (핵심 수정) ✨✨✨
     if (roundPhase === 'PLAYER_PHASE') {
         const selectedCharacter = characters.find(c => c.id === selectedCharacterId);
 
-        // ✅ 시나리오 1: 이미 행동할 캐릭터가 선택된 상태일 때
+
         if (selectedCharacter) {
-            // 1-1. 이동 단계일 때 (캐릭터를 막 선택했을 때)
             if (selectedCharActionPhase === 'MOVE') {
-                // 유효한 이동 범위를 클릭하면 -> 이동 실행
                 if (cell.classList.contains('attack-range-move')) {
                     await updateDoc(doc(db, 'games', gameId, 'characters', selectedCharacter.id), { x: cellX, y: cellY });
-                    selectedCharActionPhase = 'ACTION'; // 행동 단계로 전환
+                    selectedCharActionPhase = 'ACTION'; 
                     selectedSkill = null;
                     render();
                     return;
                 }
-                // 자기 자신을 다시 클릭하면 -> 이동 없이 행동 단계로 전환
                 if (clickedChar && clickedChar.id === selectedCharacter.id) {
                     selectedCharActionPhase = 'ACTION';
                     selectedSkill = null;
                     render();
                     return;
                 }
-                // 그 외의 모든 곳(빈 칸, 적, 다른 아군)을 클릭하면 -> 선택 해제
                 selectedCharacterId = null;
                 selectedSkill = null;
                 render();
                 return;
 
-            // 1-2. 행동 단계일 때 (캐릭터가 이동을 마친 후)
             } else if (selectedCharActionPhase === 'ACTION') {
-                // 자기 자신을 클릭하면 -> 이동 취소
                 if (clickedChar && clickedChar.id === selectedCharacter.id) {
-                    undoMove(); // 이동 취소 함수가 알아서 이동 단계로 되돌림
+                    undoMove(); 
                     return;
                 }
-                // 스킬이 선택되어 있고, 유효한 스킬 범위를 클릭했다면 -> 스킬 실행
                 const skill = SKILLS[selectedSkill];
                 if (skill && cell.classList.contains('combat-range')) {
                     await executeSkill(selectedCharacter, (skill.isAoe || !clickedChar ? { x: cellX, y: cellY } : clickedChar), selectedSkill);
                     return;
                 }
-                // 그 외의 모든 곳을 클릭하면 -> 이동을 취소하고 선택도 해제
                 undoMove();
                 selectedCharacterId = null;
                 selectedSkill = null;
                 render();
                 return;
             }
-        // ✅ 시나리오 2: 아직 아무 캐릭터도 선택하지 않은 상태일 때
         } else {
             // 무언가(캐릭터든 빈 칸이든) 클릭했다면
             if (clickedChar && clickedChar.hp > 0) {
@@ -4561,9 +4470,6 @@ async function handleCombatClick(e) {
         const targetChar = characters.find(c => c.id === charId);
         const isPC = targetChar?.type === 'PC';
 
-        // 💡 [수정] 드래그앤드롭 권한을 부여하는 조건을 명확히 합니다.
-        // 1. 관리자이고 이동이 허용된 경우
-        // 2. 일반 유저이고, 로그인한 캐릭터이며, 현재 라운드에서 자기 턴인 경우
         const canDragAndDrop = (isAdmin && isAdminMoveAllowed) || (isPC && loggedInCharId === charId && roundPhase === 'PLAYER_PHASE' && characters[currentTurnIndex]?.id === charId);
 
         if (targetChar && canDragAndDrop) { // 드래그 드롭 가능 여부만 체크
@@ -4573,7 +4479,6 @@ async function handleCombatClick(e) {
             if (canPlaceCharacter(targetChar, newX, newY)) {
                 await updateDoc(doc(db, 'games', gameId, 'characters', charId), { x: newX, y: newY });
                 
-                // ... (로그 출력 로직은 기존과 동일하게 유지) ...
                 if (targetChar.x === null) {
                    await logAction(`✅ ${targetChar.name}이(가) 전장에 합류했습니다.`, "join");
                 } else if (isAdmin && isAdminMoveAllowed) { // 관리자 이동 로그
@@ -4592,7 +4497,6 @@ async function handleCombatClick(e) {
  async function saveSettingsToFile() {
         if (!gameId) return;
 
-        // 1. 저장할 모든 데이터를 하나의 객체로 모읍니다.
         const settingsToSave = {
             gameSettings: {
                 skills: SKILLS,
@@ -4623,7 +4527,6 @@ async function handleCombatClick(e) {
         await logAction("💾 관리자가 현재 게임 설정을 파일로 저장했습니다.", "admin");
     }
 
-    // 👇 [새로 추가] 파일에서 설정을 불러와 게임에 적용하는 함수
     async function loadSettingsFromFile(file) {
         if (!file) return;
 
