@@ -1457,13 +1457,15 @@
 
                 switch (roundPhase) {
     case 'ENEMY_FORESHADOW':
-        showBannerAnnouncement(`Round ${round}`, "적 행동 예고");
+    showBannerAnnouncement(`Round ${round}`, "적 행동 예고");
+    if (isAdmin) {
         determineEnemyNextActions();
-        break;
+    }
+    break;
     
-     case 'PLAYER_PHASE': { // 블록 스코프({})를 사용하여 변수 충돌을 방지합니다.
-        showBannerAnnouncement(`Round ${round}`, "아군 턴 시작");
-        
+     case 'PLAYER_PHASE': { 
+    showBannerAnnouncement(`Round ${round}`, "아군 턴 시작");
+        if (isAdmin) {
         const livingPCs = characters.filter(c => c.type === 'PC' && c.hp > 0 && c.x !== null);
         if (livingPCs.length > 0) {
             const batch = writeBatch(db);
@@ -1522,11 +1524,13 @@
                     await logAction(`💧 모든 아군이 ${MP_REGEN_PER_TURN}의 MP를 회복했습니다.`, "system");
             }
         }
+        }
         break;
     }
         
-    case 'ENEMY_EXECUTION': { // 블록 스코프로 감싸기
-        showBannerAnnouncement(`Round ${round}`, "적군 턴 시작");
+    case 'ENEMY_EXECUTION': { 
+    showBannerAnnouncement(`Round ${round}`, "적군 턴 시작");
+    if (isAdmin) {
         const livingEnemies = characters.filter(c => c.type === 'ENEMY' && c.hp > 0 && c.x !== null);
         if (livingEnemies.length > 0) {
             const batch = writeBatch(db);
@@ -1536,14 +1540,11 @@
                 const charRef = doc(db, 'games', gameId, 'characters', enemy.id);
                 let updates = {};
 
-                // 1. MP 회복 로직
                 const newMp = Math.min(enemy.maxMp, enemy.mp + MP_REGEN_PER_TURN);
                 if (newMp > enemy.mp) {
                     updates.mp = newMp;
                     mpWasRecovered = true;
                 }
-
-                // 2. 지속 피해/회복 효과 적용
                 const effects = enemy.statusEffects || [];
                 if (effects.length > 0) {
                     let finalHp = enemy.hp;
@@ -1567,17 +1568,15 @@
                     }
                 }
                 
-                // [수정] for 루프 안에서 각 enemy의 업데이트를 batch에 추가합니다.
                 if (Object.keys(updates).length > 0) {
                     batch.update(charRef, updates);
                 }
-            } // [수정] for 루프의 닫는 괄호 '}'가 여기에 있어야 합니다.
-
-            // [수정] 모든 enemy 순회가 끝난 후 batch.commit()을 한 번만 호출합니다.
+            } 
             await batch.commit();
             if (mpWasRecovered) {
                 await logAction(`💧 모든 적군이 ${MP_REGEN_PER_TURN}의 MP를 회복했습니다.`, "system");
             }
+        }
         }
         break;
     } 
