@@ -719,16 +719,14 @@
             color: var(--accent-primary);
         }
         
-        /* NEW: Skill Button Pill Shape and Glow */
         .skill-btn {
-            border-radius: 9999px; /* Pill shape */
+            border-radius: 9999px;
             padding: 0.5rem 1rem;
             transition: all 0.3s ease;
 
-            /* --- 아래 4줄을 추가/수정하세요 --- */
             background-color: transparent; 
-            color: var(--bg-primary); /* 텍스트 색상을 배경과 대비되게 변경 */
-            font-weight: bold; /* 텍스트를 굵게 */
+            color: var(--text-primary); 
+            font-weight: bold;
             border: 1px solid var(--accent-primary);
         }
         
@@ -1210,7 +1208,8 @@
     let adminSelectedEnemyId = null;
     let selectedCharActionPhase = 'MOVE';
     let currentlyActingEnemyId = null;
-    let actingEnemyId = null; //
+    let actingEnemyId = null; 
+    let adminForeshadowSkillId = null; 
     let previewCharacterId = null; 
     let round = 1;
     let maxRounds = 0;
@@ -1622,20 +1621,16 @@
         renderLogs(snapshot.docs.map(doc => doc.data()));
     });
 }
-    
-   // --- Game Logic ---
-   const delay = ms => new Promise(res => setTimeout(res, ms));
+
+       const delay = ms => new Promise(res => setTimeout(res, ms));
     async function logAction(message, type = "system") { if (gameId) await addDoc(collection(db, "games", gameId, "logs"), { message, type, timestamp: serverTimestamp() }); }
     async function advanceRoundPhase() {
-    // 1. 플레이어 턴 종료 -> 적 실행 단계로 전환
     if (roundPhase === 'PLAYER_PHASE') {
         await setDoc(doc(db, 'games', gameId), { roundPhase: 'ENEMY_EXECUTION' }, { merge: true });
     } 
-    // 2. 적 실행 종료 -> 다음 라운드 예고 단계로 전환
     else if (roundPhase === 'ENEMY_EXECUTION') {
-        currentlyActingEnemyId = null; // 남아있는 말풍선 제거
+        currentlyActingEnemyId = null; 
 
-        // --- ▼ [핵심 추가] 라운드 종료 시 모든 캐릭터의 효과 지속시간 감소 ---
         const endOfRoundBatch = writeBatch(db);
         const livingCharacters = characters.filter(c => c.hp > 0 && c.x !== null);
 
@@ -2815,23 +2810,47 @@ function renderSkillButtons(selectedChar) {
     if (roundPhase === 'ENEMY_FORESHADOW') {
         if (isAdmin) {
             const selectedEnemy = characters.find(c => c.id === adminSelectedEnemyId);
+            let skillButtonsHtml = '';
+
+            // [추가] 선택된 적이 있다면 스킬 버튼들을 생성합니다.
+            if (selectedEnemy) {
+                skillButtonsHtml += `<h4 class="text-md font-bold text-yellow-300 mt-3 mb-2">사용할 스킬 선택:</h4><div class="flex flex-wrap gap-2">`;
+                selectedEnemy.skills.forEach(id => {
+                    const skill = SKILLS[id];
+                    if (skill) {
+                        const isSelected = adminForeshadowSkillId === id;
+                        // 스킬 버튼에 선택 시 시각적 효과(ring)를 주기 위한 클래스를 추가합니다.
+                        skillButtonsHtml += `<button data-skill-id="${id}" class="skill-btn foreshadow-skill-btn ${isSelected ? 'ring-2 ring-red-400' : ''} p-2 flex items-center flex-col text-xs font-semibold">
+                                        ${skill.icon} ${skill.name}
+                                      </button>`;
+                    }
+                });
+                skillButtonsHtml += `</div>`;
+            }
+
             skillControls.innerHTML = `
                 <h3 class="text-lg font-bold mb-2 text-red-400">적 행동 예고</h3>
-                <p class="text-sm text-gray-400 mb-4">적을 클릭하여 선택 후, 공격할 아군을 클릭하세요.</p>
-                <p class="text-sm font-semibold mb-4">선택된 적: <span class="text-yellow-400">${selectedEnemy?.name || '없음'}</span></p>
+                <p class="text-sm text-gray-400 mb-4">① 적 선택 → ② 스킬 선택 → ③ 대상 아군 클릭</p>
+                <p class="text-sm font-semibold mb-2">선택된 적: <span class="text-yellow-400">${selectedEnemy?.name || '없음'}</span></p>
+                <div id="foreshadow-skill-container" class="mb-4">${skillButtonsHtml}</div>
                 <button id="end-foreshadow-btn" class="w-full bg-green-600 p-2 font-bold">✔️ 예고 완료</button>
             `;
             document.getElementById('end-foreshadow-btn').onclick = () => setDoc(doc(db, 'games', gameId), { roundPhase: 'PLAYER_PHASE' }, { merge: true });
+
+            document.querySelectorAll('.foreshadow-skill-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    adminForeshadowSkillId = e.currentTarget.dataset.skillId;
+                    render(); 
+                };
+            });
         } else {
             skillControls.innerHTML = `<p class="text-sm text-gray-400 mt-4">관리자가 적의 행동을 설정하고 있습니다...</p>`;
         }
         return;
     }
 
-    // 2. 적 행동 실행 단계 UI (자동/수동)
     if (roundPhase === 'ENEMY_EXECUTION') {
         if (isAdmin) {
-            // [핵심 수정] 수동 조작 시 선택된 적의 UI를 표시하는 로직 추가
             const isManuallyControllingEnemy = selectedChar && selectedChar.type === 'ENEMY';
             if (isManuallyControllingEnemy) {
                 let html = `<h3 class="text-lg font-bold mb-2 text-red-500">[수동 조작] ${selectedChar.name} 행동</h3>`;
@@ -3228,7 +3247,7 @@ function renderSkillButtons(selectedChar) {
             barContainer.innerHTML = `<div class="hp-bar"><div class="hp-fill" style="width: ${hpPercent}%;"></div></div><div class="mp-bar"><div class="mp-fill" style="width: ${mpPercent}%;"></div></div>`;
             token.appendChild(barContainer);
             
-            if (char.id === actingEnemyId && char.nextAction) {
+            if (char.nextAction && char.hp > 0) { 
                 const bubble = document.createElement('div');
                 bubble.className = 'action-speech-bubble';
                 const skill = SKILLS[char.nextAction.skillId];
@@ -3585,7 +3604,8 @@ async function resetAllCharacterStats() {
                     mp: charData.maxMp, // MP도 최대 MP로 설정
                     x: null,             // 보드에서 배치 해제
                     y: null,
-                    statusEffects: []    // [수정] 모든 상태 효과(버프/디버프)도 제거
+                    statusEffects: [],   // 모든 상태 효과(버프/디버프)도 제거
+                    nextAction: deleteField() // ❗️ [추가] 예고된 행동 정보를 삭제합니다.
                 });
             });
             await batch.commit();
@@ -4257,21 +4277,23 @@ async function handleCombatClick(e) {
         return cellX >= char.x && cellX < (char.x + size) && cellY >= char.y && cellY < (char.y + size);
     });
 
-    // 1. 적 행동 예고 단계 로직 (기존과 동일)
     if (roundPhase === 'ENEMY_FORESHADOW' && isAdmin) {
         if (clickedChar && clickedChar.type === 'ENEMY') {
             adminSelectedEnemyId = clickedChar.id;
             selectedCharacterId = clickedChar.id;
             selectedSkill = 'move';
+            adminForeshadowSkillId = null; 
         } else if (clickedChar && clickedChar.type === 'PC' && adminSelectedEnemyId) {
             const enemy = characters.find(c => c.id === adminSelectedEnemyId);
-            const defaultSkillId = enemy.skills.find(id => SKILLS[id]?.category === 'Attack');
-            if (enemy && defaultSkillId) {
+            if (enemy && adminForeshadowSkillId) {
                 await updateDoc(doc(db, 'games', gameId, 'characters', enemy.id), {
-                    nextAction: { targetId: clickedChar.id, skillId: defaultSkillId }
+                    nextAction: { targetId: clickedChar.id, skillId: adminForeshadowSkillId }
                 });
                 adminSelectedEnemyId = null;
+                adminForeshadowSkillId = null;
                 selectedCharacterId = null;
+            } else {
+                showCustomModal("스킬 미선택", "먼저 사용할 스킬을 선택해주세요.", [{text:"확인", class:"bg-yellow-600"}]);
             }
         }
         render();
