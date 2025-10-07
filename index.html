@@ -4236,7 +4236,17 @@ document.getElementById('force-enemy-phase-btn').onclick = async () => {
         }
         return true;
     }
+ async function handlePreparationClick(e) {
+        const cell = e.target.closest('.cell');
+        if (!cell) return;
 
+        if (isAdmin && isMapEditMode) {
+            const x = parseInt(cell.dataset.x);
+            const y = parseInt(cell.dataset.y);
+            
+            await saveBoardTile(x, y, currentTileType);
+        }
+    }
 async function handleCombatClick(e) {
     const cell = e.target.closest('.cell');
     if (!cell) return;
@@ -4667,4 +4677,3 @@ async function handleCombatClick(e) {
 </script>
 </body>
 </html>
-
