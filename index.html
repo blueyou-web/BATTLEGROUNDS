@@ -1424,7 +1424,7 @@ const loginStatusModal = document.getElementById('login-status-modal');
             skills: DEFAULT_SKILLS, 
             currentTurnIndex: 0, 
             currentTurnCharId: null, 
-//여기를 수정해주세요 : 관리자 비밀번호
+//여기를 수정해주세요 관리자 비밀번호
             adminPassword: "0000", 
             gameState: 'PREPARATION', 
             round: 1, 
@@ -1529,6 +1529,13 @@ const loginStatusModal = document.getElementById('login-status-modal');
                                         updates.mp = newMp;
                                         mpWasRecovered = true;
                                     }
+                                    const tileKey = `${pc.x},${pc.y}`;
+                const tile = boardTiles[tileKey];
+                if (tile && tile.type === 'damage') {
+                    const damage = DAMAGE_TILE_DAMAGE;
+                    updates.hp = Math.max(0, (updates.hp !== undefined ? updates.hp : pc.hp) - damage);
+                    logAction(`🩸 ${pc.name}이(가) 대미지 칸에 서있어 **${damage} 피해**를 입었습니다!`, "damage");
+                }
                                     const effects = pc.statusEffects || [];
                                     if (effects.length > 0) {
                                         const isStunned = effects.some(effect => effect.id === 'stunned');
@@ -1583,6 +1590,13 @@ const loginStatusModal = document.getElementById('login-status-modal');
                                         updates.mp = newMp;
                                         mpWasRecovered = true;
                                     }
+                                    const tileKey = `${enemy.x},${enemy.y}`;
+                const tile = boardTiles[tileKey];
+                if (tile && tile.type === 'damage') {
+                    const damage = DAMAGE_TILE_DAMAGE;
+                    updates.hp = Math.max(0, enemy.hp - damage);
+                    logAction(`🩸 ${enemy.name}이(가) 대미지 칸에 서있어 **${damage} 피해**를 입었습니다!`, "damage");
+                }
                                     const effects = enemy.statusEffects || [];
                                     if (effects.length > 0) {
                                         let finalHp = enemy.hp;
@@ -4898,7 +4912,7 @@ createGameBtn.addEventListener('click', createGame);
         const errorP = document.getElementById('admin-password-error');
         if (gameId) {
             const gameDoc = await getDoc(doc(db, 'games', gameId));
-//여기를 수정해주세요 : 관리자 비밀번호
+//여기를 수정해주세요 관리자 비밀번호
             const correctPassword = gameDoc.data().adminPassword || "0000";
             if (input.value === correctPassword) {
                 closeModal('admin-password-modal');
