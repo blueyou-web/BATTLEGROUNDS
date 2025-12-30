@@ -1218,9 +1218,8 @@
     import { getFirestore, collection, onSnapshot, doc, updateDoc, query, getDocs, writeBatch, getDoc, setDoc, addDoc, serverTimestamp, orderBy, deleteDoc, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // IMPORTANT: In a real environment, these configs should be loaded securely.
-//여기를 수정해주세요—------ Firebase 생성코드
     const firebaseConfig = {
-  apiKey: "AIzaSyArEapUUDgW4mKUNpDFYgxScFegVlz7oRg",
+        apiKey: "AIzaSyArEapUUDgW4mKUNpDFYgxScFegVlz7oRg",
   authDomain: "battlemap-a38d1.firebaseapp.com",
   projectId: "battlemap-a38d1",
   storageBucket: "battlemap-a38d1.firebasestorage.app",
@@ -1424,8 +1423,7 @@ const loginStatusModal = document.getElementById('login-status-modal');
             skills: DEFAULT_SKILLS, 
             currentTurnIndex: 0, 
             currentTurnCharId: null, 
-//여기를 수정해주세요 : 관리자 비밀번호
-            adminPassword: "1234", 
+            adminPassword: "0000", 
             gameState: 'PREPARATION', 
             round: 1, 
             maxRounds: 0, 
@@ -1555,6 +1553,15 @@ const loginStatusModal = document.getElementById('login-status-modal');
                                             updates.hp = finalHp;
                                         }
                                     }
+                                    const enemyTileKey = `${enemy.x},${enemy.y}`;
+                const enemyTile = boardTiles[enemyTileKey];
+                if (enemyTile && enemyTile.type === 'damage') {
+                    const currentEnemyHp = updates.hp !== undefined ? updates.hp : enemy.hp;
+                    const tileDamage = 10;
+                    updates.hp = Math.max(0, currentEnemyHp - tileDamage);
+                    
+                    logAction(`🩸 ${enemy.name}이(가) 대미지 칸에서 턴을 시작하여 **${tileDamage} 피해**를 입었습니다!`, "damage");
+                }
                                     if (Object.keys(updates).length > 0) {
                                         batch.update(charRef, updates);
                                     }
@@ -1563,6 +1570,7 @@ const loginStatusModal = document.getElementById('login-status-modal');
                                 if (mpWasRecovered) {
                                         await logAction(`💧 모든 아군이 ${MP_REGEN_PER_TURN}의 MP를 회복했습니다.`, "system");
                                 }
+                                
                             }
                         }
                         break;
@@ -1604,6 +1612,15 @@ const loginStatusModal = document.getElementById('login-status-modal');
                                             updates.hp = finalHp;
                                         }
                                     }
+                                    const tileKey = `${pc.x},${pc.y}`;
+                const tile = boardTiles[tileKey];
+                if (tile && tile.type === 'damage') {
+                    const currentHpForCheck = updates.hp !== undefined ? updates.hp : pc.hp;
+                    const tileDamage = 10;
+                    updates.hp = Math.max(0, currentHpForCheck - tileDamage);
+                    
+                    logAction(`🩸 ${pc.name}이(가) 대미지 칸에서 턴을 시작하여 **${tileDamage} 피해**를 입었습니다!`, "damage");
+                }
                                     if (Object.keys(updates).length > 0) {
                                         batch.update(charRef, updates);
                                     }
@@ -4898,8 +4915,7 @@ createGameBtn.addEventListener('click', createGame);
         const errorP = document.getElementById('admin-password-error');
         if (gameId) {
             const gameDoc = await getDoc(doc(db, 'games', gameId));
-//여기를 수정해주세요 : 관리자 비밀번호
-            const correctPassword = gameDoc.data().adminPassword || "1234";
+            const correctPassword = gameDoc.data().adminPassword || "0000";
             if (input.value === correctPassword) {
                 closeModal('admin-password-modal');
                 isAdmin = true;
@@ -5154,7 +5170,3 @@ window.addEventListener('beforeunload', async (event) => {
 </script>
 </body>
 </html>
-
-
-
-
