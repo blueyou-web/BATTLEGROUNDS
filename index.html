@@ -1425,7 +1425,7 @@ const loginStatusModal = document.getElementById('login-status-modal');
             currentTurnIndex: 0, 
             currentTurnCharId: null, 
 //여기를 수정해주세요 : 관리자 비밀번호
-            adminPassword: "0000", 
+            adminPassword: "1234", 
             gameState: 'PREPARATION', 
             round: 1, 
             maxRounds: 0, 
@@ -4899,7 +4899,7 @@ createGameBtn.addEventListener('click', createGame);
         if (gameId) {
             const gameDoc = await getDoc(doc(db, 'games', gameId));
 //여기를 수정해주세요 : 관리자 비밀번호
-            const correctPassword = gameDoc.data().adminPassword || "0000";
+            const correctPassword = gameDoc.data().adminPassword || "1234";
             if (input.value === correctPassword) {
                 closeModal('admin-password-modal');
                 isAdmin = true;
@@ -5154,6 +5154,7 @@ window.addEventListener('beforeunload', async (event) => {
 </script>
 </body>
 </html>
+
 
 
 
