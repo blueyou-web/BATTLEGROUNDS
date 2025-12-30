@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>인터랙티브 게임 보드</title>
+    <title>게임 보드</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -66,29 +66,29 @@
             --bg-selection-overlay: linear-gradient(180deg, var(--bg-primary) 0%, rgba(229, 231, 235, 0.7) 100%);
             --mp-color: #1D4ED8;
 
-            /* Custom Scrollbar Colors (Light Mode) */
+            
             --scrollbar-thumb: var(--accent-primary);
             --scrollbar-track: #F0F0F0;
 
-            /* Skill Button Glow/Ring Color */
+            
             --skill-ring-color: rgba(140, 106, 72, 0.8);
 
-            /* Turn Box Style */
-            --turn-box-bg: rgba(229, 231, 235, 0.5); /* Semi-transparent tertiary bg */
+            
+            --turn-box-bg: rgba(229, 231, 235, 0.5); 
             --turn-box-border: var(--accent-primary);
             --summary-box-bg: rgba(140, 106, 72, 0.1);
 
-            /* NEW: Gradients for numbers (Light Mode adjustment) */
+            
             --gradient-start: #3A3226; 
             --gradient-end: #000000;
             --pc-color: #16A34A;
             --enemy-color: #DC2626;
         }
 
-        /* Global Custom Scrollbar Styles */
+        
         ::-webkit-scrollbar {
             width: 8px;
-            height: 8px; /* For horizontal scrollbars */
+            height: 8px; 
         }
         ::-webkit-scrollbar-track {
             background: var(--scrollbar-track);
@@ -97,13 +97,13 @@
         ::-webkit-scrollbar-thumb {
             background: var(--scrollbar-thumb);
             border-radius: 10px;
-            opacity: 0.7; /* Make slightly translucent */
+            opacity: 0.7; 
         }
         ::-webkit-scrollbar-thumb:hover {
             background: var(--accent-secondary);
         }
         
-        /* Custom horizontal scrollbar for selection list (more transparent) */
+        
         #selection-list::-webkit-scrollbar {
             height: 6px;
         }
@@ -201,6 +201,11 @@
         .enemy-threat-range {
             background-color: rgba(200, 50, 50, 0.07);
         }
+        .threat-range-foreshadow {
+    background-color: rgba(239, 68, 68, 0.25); 
+    outline: 1px solid rgba(239, 68, 68, 0.5);
+    outline-offset: -1px;
+}
 
         @keyframes turn-glow {
             0% { 
@@ -253,15 +258,15 @@
         }
           .status-effect-icon {
             position: absolute;
-            top: -5px; /* 토큰보다 살짝 위로 */
+            top: -5px; 
             right: -5px;
-            font-size: 1.5rem; /* 아이콘 크기 */
-            z-index: 25; /* 토큰 이미지(20)보다 위에 표시 */
-            pointer-events: none; /* 아이콘이 클릭을 방해하지 않도록 설정 */
-            filter: drop-shadow(0 0 3px rgba(0, 0, 0, 1)); /* 아이콘이 잘 보이도록 그림자 추가 */
+            font-size: 1.5rem; 
+            z-index: 25; 
+            pointer-events: none; 
+            filter: drop-shadow(0 0 3px rgba(0, 0, 0, 1)); 
         }
 
-        /* Damage Effect */
+        
         .character-token.show-hit-overlay::after {
             content: '';
             position: absolute;
@@ -288,7 +293,7 @@
             animation: hit-effect 0.5s ease-in-out;
         }
         
-        /* Heal Effect */
+        
         .character-token.show-heal-overlay::after {
             content: '';
             position: absolute;
@@ -304,7 +309,7 @@
 
         .action-speech-bubble {
     position: absolute;
-    bottom: 110%; /* 토큰 바로 위에 위치 */
+    bottom: 110%; 
     left: 50%;
     transform: translateX(-50%);
     background-color: rgba(255, 255, 255, 0.9);
@@ -314,13 +319,13 @@
     font-size: 0.8rem;
     font-weight: bold;
     white-space: nowrap;
-    z-index: 35; /* 토큰(20)보다 위에 표시 */
-    pointer-events: none; /* [중요] 말풍선이 마우스 클릭을 방해하지 않도록 함 */
+    z-index: 35; 
+    pointer-events: none; 
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     font-family: 'Noto Sans KR', sans-serif;
 }
 
-/* 말풍선 꼬리 만들기 */
+
 .action-speech-bubble::after {
     content: '';
     position: absolute;
@@ -343,17 +348,17 @@
         .ghost-preview-token {
     opacity: 0.6;
     border: 3px dashed var(--accent-primary);
-    pointer-events: none; /* [중요] 유령 토큰이 클릭을 방해하지 않도록 함 */
+    pointer-events: none; 
     filter: saturate(0.8);
 }
 
-        /* Turn Marker Animation */
+        
         @keyframes bounce-arrow {
             0%, 100% { 
                 transform: translateX(-50%) translateY(0); 
             }
             50% { 
-                transform: translateX(-50%) translateY(-6px); /* Reduced movement */
+                transform: translateX(-50%) translateY(-6px); 
             }
         }
         @keyframes enemy-turn-glow-animation {
@@ -361,9 +366,9 @@
     50% { box-shadow: 0 0 16px 5px var(--log-damage); }
 }
 
-/* [신규] 행동 가능한 적 토큰에 적용될 붉은색 오라 클래스 */
+
 .character-token.enemy-turn-glow {
-    border-color: var(--log-damage); /* 붉은색 테두리 */
+    border-color: var(--log-damage); 
 }
 .character-token.enemy-turn-glow::before {
     content: '';
@@ -375,13 +380,13 @@
     animation: enemy-turn-glow-animation 3s infinite ease-in-out;
 }
 
-/* [신규] 행동 가능한 적 토큰 위에 표시될 붉은색 삼각형 마커 */
+
 .enemy-turn-marker {
     position: absolute;
     top: -1.5rem;
     left: 50%;
     transform: translateX(-50%);
-    color: var(--log-damage); /* 붉은색 */
+    color: var(--log-damage); 
     font-size: 1.5rem;
     line-height: 1;
     animation: bounce-arrow 1s infinite ease-in-out;
@@ -394,19 +399,19 @@
 }
         
         .turn-marker {
-            /* Position adjusted slightly to the left */
+            
             position: absolute;
-            top: -1.5rem; /* Reduced distance */
-            left: 50%; /* Moved from 45% for more left shift */
+            top: -1.5rem; 
+            left: 50%; 
             transform: translateX(-50%);
             color: var(--turn-highlight-color);
-            font-size: 1.5rem; /* Reduced size */
+            font-size: 1.5rem; 
             line-height: 1;
-            /* Bounce only */
+            
             animation: bounce-arrow 1s infinite ease-in-out; 
             z-index: 30;
             
-            /* Outer Glow Styles REMOVED from marker itself */
+            
             filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.7)); 
             border-radius: 50%;
             padding: 0 4px; 
@@ -415,12 +420,12 @@
         }
         
         .turn-marker:after {
-           /* GLOW REMOVED FROM MARKER :after */
+           
            content: none;
         }
         
 
-        /* HP/MP Bar styles */
+        
         .hp-mp-bar-container {
              position: absolute;
              bottom: 0;
@@ -429,8 +434,8 @@
              z-index: 5;
              display: flex;
              flex-direction: column;
-             gap: 1px; /* Space between bars */
-             padding: 1px 0; /* Vertical padding */
+             gap: 1px; 
+             padding: 1px 0; 
         }
         .hp-bar {
             height: 3px;
@@ -441,7 +446,7 @@
             border-radius: 1px;
         }
         .mp-bar {
-            height: 2px; /* Smaller MP bar */
+            height: 2px; 
             background-color: #111827;
             overflow: hidden;
             width: 90%;
@@ -462,15 +467,15 @@
         .character-token:hover {
             transform: scale(1.1);
         }  #game-board.targeting-active .character-token:hover {
-            transform: none; /* 크기 변경 효과(scale)를 없앱니다. */
+            transform: none; 
         }
         .selected-character {
              box-shadow: 0 0 15px 3px var(--accent-primary);
              border-color: var(--accent-primary) !important;
         }
         .token-click-through {
-            opacity: 0.7; /* [추가] 피드백을 위해 살짝 반투명하게 만듭니다. */
-            pointer-events: none; /* 이 요소에 대한 마우스 이벤트를 무시하고, 아래에 있는 요소(셀)가 클릭되도록 합니다. */
+            opacity: 0.7; 
+            pointer-events: none; 
         }
         
         .form-input {
@@ -521,12 +526,12 @@
         }
         
         #character-selection-overlay.collapsed { height: 1rem; }
-        /* NEW: Improved horizontal scrolling for selection list */
+        
         #selection-list { 
             overflow-x: scroll; 
             white-space: nowrap; 
             -webkit-overflow-scrolling: touch; 
-            justify-content: flex-start; /* Align cards to the start for better horizontal flow */
+            justify-content: flex-start; 
         }
         #selection-list::-webkit-scrollbar {
             height: 6px;
@@ -617,19 +622,20 @@
         #game-log-list .log-admin-move::before { color: var(--log-admin); }
 
         .profile-modal-container { 
-            background: url('https://www.transparenttextures.com/patterns/dark-matter.png'), linear-gradient(to bottom right, #1a1a1a, #111111); 
-            color: var(--text-primary); 
-            border: 1px solid var(--accent-primary); 
-            box-shadow: 0 0 30px rgba(212, 183, 131, 0.3); 
-            display: grid; 
-            grid-template-columns: 350px 1fr;
-            width: 100%; 
-            max-width: 900px; 
-            /* height: 600px; Remove fixed height */
-            max-height: 90vh; /* Set max height relative to viewport */
-            overflow: hidden; 
-            position: relative; 
-        }
+    background: url('https://www.transparenttextures.com/patterns/dark-matter.png'), linear-gradient(to bottom right, #1a1a1a, #111111); 
+    color: var(--text-primary); 
+    border: 1px solid var(--accent-primary); 
+    box-shadow: 0 0 30px rgba(212, 183, 131, 0.3); 
+    display: grid; 
+    grid-template-columns: 350px 1fr;
+    width: 100%; 
+    max-width: 900px; 
+        height: 650px; 
+    max-height: 90vh;
+    overflow: hidden; 
+    
+    position: relative; 
+}
         .profile-modal-container.enemy-profile { border-color: #ef4444; box-shadow: 0 0 30px rgba(239, 68, 68, 0.3); }
         .profile-modal-container.enemy-profile .profile-char-name, 
         .profile-modal-container.enemy-profile .stat-item svg, 
@@ -644,13 +650,13 @@
             background-position: center 20%; 
         }
         .profile-stats-panel { 
-            padding: 2.5rem;
-            background-color: rgba(0,0,0,0.1); 
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            overflow: hidden;
-        }
+    padding: 2.5rem;
+    background-color: rgba(0,0,0,0.1); 
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+        overflow-y: auto; 
+}
         .profile-char-name { font-size: 2.5rem; font-weight: bold; color: var(--accent-primary); margin-bottom: 0.5rem; }
         .profile-char-type { font-size: 1rem; color: var(--text-secondary); margin-bottom: 2rem; flex-shrink: 0; }
         .profile-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; flex-shrink: 0; }
@@ -665,7 +671,7 @@
             padding-right: 1rem;
             margin-right: -1rem;
         }
-        /* Make sure scrollbars are themed */
+        
         .profile-content-scroll::-webkit-scrollbar { width: 8px; }
         .profile-content-scroll::-webkit-scrollbar-track { background: var(--scrollbar-track); }
         .profile-content-scroll::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
@@ -673,30 +679,30 @@
 
         #profile-modal #close-modal-btn { position: absolute; top: 1rem; right: 1rem; z-index: 10; background: none; border: none; }
         
-        /* NEW: Fix for Edit Modal content overflow */
+        
         .profile-modal-container[style*="grid-template-columns: 1fr"] {
-             height: auto; /* Allow height to shrink/grow */
+             height: auto; 
              min-height: 400px;
         }
         .profile-modal-container[style*="grid-template-columns: 1fr"] .p-6 {
             display: flex;
             flex-direction: column;
-            height: 100%; /* Ensure content panel takes full height */
+            height: 100%; 
         }
         .profile-modal-container[style*="grid-template-columns: 1fr"] .space-y-4 {
             overflow-y: auto;
             flex-grow: 1;
-            padding-right: 1rem; /* Adjust padding for scrollbar */
+            padding-right: 1rem; 
             margin-right: -1rem;
         }
         .profile-modal-container[style*="grid-template-columns: 1fr"] .space-y-4::-webkit-scrollbar { width: 8px; }
-        /* Apply themed scrollbars to edit modal */
+        
         .profile-modal-container[style*="grid-template-columns: 1fr"] .space-y-4::-webkit-scrollbar-track { background: var(--scrollbar-track); }
         .profile-modal-container[style*="grid-template-columns: 1fr"] .space-y-4::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); }
         .profile-modal-container[style*="grid-template-columns: 1fr"] .space-y-4::-webkit-scrollbar-thumb:hover { background: var(--accent-secondary); }
 
 
-        /* User Info Button Style */
+        
         .info-button {
             background-color: var(--bg-tertiary);
             border: 1px solid var(--border-secondary);
@@ -729,24 +735,24 @@
              box-shadow: 0 0 10px var(--skill-ring-color) !important;
         }
 
-        /* NEW: Horizontal button group for utility controls */
+        
         #utility-controls {
             position: fixed;
             bottom: 8px;
             right: 8px;
             z-index: 50;
             display: flex;
-            gap: 8px; /* Spacing between buttons */
+            gap: 8px; 
             align-items: flex-end;
         }
 
-        /* NEW: Stylish Turn Box */
+        
         #turn-status.stylish-turn-box {
-            /* Background: Darker gradient of accent color */
+            
             background: linear-gradient(145deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1));
             backdrop-filter: blur(2px);
             border: 2px solid var(--accent-primary);
-            box-shadow: 0 0 15px rgba(212, 183, 131, 0.3); /* Lighter glow for the box */
+            box-shadow: 0 0 15px rgba(212, 183, 131, 0.3); 
             padding: 0.75rem;
             border-radius: 8px;
             text-align: center;
@@ -757,41 +763,41 @@
         }
 
         #turn-status.stylish-turn-box p {
-            /* Set '현재 턴:' text color to primary accent (scrollbar thumb color) */
+            
              color: var(--accent-primary) !important; 
              font-weight: bold;
         }
 
         #turn-status.stylish-turn-box #current-turn-char {
-             color: var(--accent-primary); /* Use accent primary for the name highlight */
+             color: var(--accent-primary); 
         }
         
-        /* UPDATED: Stylish Unit Summary Box - Removed background/borders for transparent look */
+        
         #unit-summary {
-             /* background-color: var(--summary-box-bg); REMOVED */
-             /* border: 1px solid var(--border-secondary); REMOVED */
+             
+             
              border-radius: 8px;
-             padding: 0.75rem 0; /* Reduced vertical padding slightly */
+             padding: 0.75rem 0; 
              display: grid;
              grid-template-columns: 1fr 1fr;
              gap: 1rem;
              text-align: center;
-             /* box-shadow: inset 0 0 5px rgba(0,0,0,0.1); REMOVED */
+             
         }
         #remaining-pc, #remaining-enemy {
-            background-color: transparent; /* Make inner boxes transparent */
-            padding: 0; /* Remove inner padding */
+            background-color: transparent; 
+            padding: 0; 
             border-radius: 0;
             border: none;
         }
 
-        /* NEW: Custom styles for the large gradient numbers */
+        
         .summary-count {
-            font-size: 3rem; /* Large font size for emphasis */
+            font-size: 3rem; 
             font-weight: 700;
             display: inline-block;
             line-height: 1;
-            /* Apply Gradiant Text effect */
+            
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
@@ -805,14 +811,14 @@
         }
 
         #turn-announcement-backdrop {
-            display: none; /* 평소에는 숨김 */
+            display: none; 
             position: fixed;
-            inset: 0; /* top, right, bottom, left를 모두 0으로 설정 */
+            inset: 0; 
             background-color: rgba(0, 0, 0, 0.75);
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
-            z-index: 100; /* 텍스트 바로 아래에 위치 */
-            pointer-events: none; /* 클릭 방지 */
+            z-index: 100; 
+            pointer-events: none; 
         }
 
         #turn-announcement-backdrop.visible {
@@ -820,14 +826,14 @@
             opacity: 1;
         }
 
-        /* UPDATED: Turn Announcement Banner Styles */
+        
         #turn-announcement {
             display: none;
             position: fixed;
             top: 45%;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 101; /* 백드롭 위에 위치 */
+            z-index: 101; 
             
             color: var(--turn-highlight-color); 
             font-family: 'Cinzel', serif;
@@ -843,14 +849,14 @@
                  0 0 15px rgba(0,0,0,0.8);
         }
 
-        /* NEW: 텍스트 포맷을 위한 스타일 */
+        
         #turn-announcement .round-text {
             display: block;
             font-size: 1.5rem;
             font-weight: normal;
             opacity: 0.8;
             margin-bottom: 0.5rem;
-            letter-spacing: 1px; /* 자간 추가 */
+            letter-spacing: 1px; 
         }
 
         #turn-announcement .turn-text {
@@ -858,12 +864,12 @@
             font-size: 3.5rem;
         }
 
-        /* Class to trigger the animation */
+        
         #turn-announcement.animate-turn {
             display: block;
             animation: turn-announce-animation 2.5s ease-in-out forwards;
         }
- /* --- 이동 취소 & 턴 종료 버튼 스타일 --- */
+ 
 
         #undo-move-btn, #end-turn-btn {
             color: white;
@@ -876,23 +882,23 @@
         }
 
         #undo-move-btn:hover, #end-turn-btn:hover {
-            transform: translateY(-2px); /* 살짝 떠오르는 효과 */
-            filter: brightness(1.15); /* 더 밝아지는 효과 */
+            transform: translateY(-2px); 
+            filter: brightness(1.15); 
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        /* 이동 취소 버튼 - 회색 계열 그라데이션 */
+        
         #undo-move-btn {
             background-image: linear-gradient(to top, #4b5563, #6b7280);
             color: var(--text-primary);
         }
 
-        /* 턴 종료 버튼 - 테마 색상(금색) 계열 그라데이션 */
+        
         #end-turn-btn {
             background-image: linear-gradient(to top, var(--accent-secondary), var(--turn-highlight-color));
-            color: var(--bg-primary); /* 밝은 배경에 어두운 글씨로 가독성 확보 */
+            color: var(--bg-primary); 
         }
-        /* UPDATED: Keyframes for the announcement animation */
+        
         @keyframes turn-announce-animation {
             0% {
                 transform: translateX(-150vw);
@@ -905,17 +911,17 @@
             45% {
                 transform: translateX(-50%);
                 opacity: 1;
-                /* 기존 그림자 유지 */
+                
                 text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 0 15px rgba(0,0,0,0.8);
             }
             50% {
-                /* 변경됨: 텍스트와 같은 색으로 은은하게 빛나는 효과 */
+                
                 text-shadow: 
                     -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000,
-                    0 0 10px var(--turn-highlight-color); /* <-- 이 부분이 은은한 빛 효과 */
+                    0 0 10px var(--turn-highlight-color); 
             }
             55% {
-                /* 다시 기존 그림자로 복귀 */
+                
                 transform: translateX(-50%);
                 opacity: 1;
                 text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 0 15px rgba(0,0,0,0.8);
@@ -939,8 +945,8 @@
 
 .foreshadow-line {
     stroke-width: 3;
-    stroke: rgba(239, 68, 68, 0.7); /* 반투명한 붉은색 */
-    stroke-dasharray: 8 4; /* 점선 스타일 */
+    stroke: rgba(239, 68, 68, 0.7); 
+    stroke-dasharray: 8 4; 
     animation: dash-flow 1s linear infinite;
 }
 
@@ -949,14 +955,55 @@
         stroke-dashoffset: -12;
     }
 }
+.cell.drag-over {
+    background-color: rgba(212, 183, 131, 0.3) !important;
+    outline: 2px solid var(--accent-primary);
+    outline-offset: -2px;
+}
+
+.combat-text {
+    position: fixed; 
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: 'Cinzel', serif;
+    pointer-events: none;
+    z-index: 110; 
+    text-shadow: 0 0 5px black, 0 0 5px black;
+    animation: float-up-and-fade 1.5s ease-out forwards;
+}
+
+.combat-text.damage {
+    color: #F87171; 
+}
+
+.combat-text.heal {
+    color: #4ADE80; 
+}
+
+@keyframes float-up-and-fade {
+    0% {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -150%); 
+        opacity: 0;
+    }
+}
+
     </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen p-4 overflow-x-hidden pt-60">
-
-    <!-- NEW: Utility Control Group (Bottom Right) -->
+    <div id="drag-ghost" class="hidden absolute rounded-full z-[100] pointer-events-none w-16 h-16 border-2 border-dashed border-yellow-400 bg-black/30 backdrop-blur-sm"></div>
     <div id="turn-announcement-backdrop"></div> <div id="turn-announcement"></div>
-    <div id="utility-controls">
-        <button id="user-info-btn" class="info-button p-3 rounded-full transition-transform hover:scale-110">
+
+     
+    <div id="turn-announcement-backdrop"></div> <div id="turn-announcement"></div>
+<div id="utility-controls">
+    <button id="login-status-btn" class="info-button p-3 rounded-full transition-transform hover:scale-110 hidden">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.122-1.28-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.122-1.28.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+    </button>
+    <button id="user-info-btn" class="info-button p-3 rounded-full transition-transform hover:scale-110">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         </button>
         <button id="theme-toggle-btn" class="info-button p-3 rounded-full transition-transform hover:scale-110">
@@ -966,9 +1013,16 @@
         <button id="admin-panel-btn" class="text-white font-bold p-3 rounded-full shadow-lg z-50 transition-transform hover:scale-110" style="background-color: var(--accent-primary); color: var(--bg-primary) !important;">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
         </button>
-    </div>
+</div>
 
-    <!-- User Info Modal -->
+<div id="login-status-modal" class="modal-backdrop fixed inset-0 flex items-center justify-center p-4 z-[80] hidden">
+    <div class="modal-content rounded-md shadow-2xl p-8 w-full max-w-md">
+        <h3 class="text-2xl font-bold mb-4 font-title" style="color: var(--accent-primary);">플레이어 접속 현황</h3>
+        <ul id="login-status-list-modal" class="space-y-2 text-sm max-h-60 overflow-y-auto pr-2">
+            </ul>
+        <button id="close-login-status-modal-btn" class="w-full mt-6 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2">닫기</button>
+    </div>
+</div>
     <div id="user-info-modal" class="modal-backdrop fixed inset-0 flex items-center justify-center p-4 z-[80] hidden">
         <div class="modal-content rounded-md shadow-2xl p-8 w-full max-w-md">
             <h3 class="text-2xl font-bold mb-4 font-title" style="color: var(--accent-primary);">내 정보 및 게임 코드</h3>
@@ -996,9 +1050,9 @@
             <button id="close-user-info-modal-btn" class="w-full mt-4 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2">닫기</button>
         </div>
     </div>
-    <!-- End User Info Modal -->
+     
 
-    <!-- Game Lobby Modal -->
+     
     <div id="game-lobby-modal" class="modal-backdrop fixed inset-0 flex items-center justify-center p-4 z-[100]">
         <div class="modal-content rounded-md shadow-2xl p-8 w-full max-w-md">
             <h2 class="text-3xl font-bold mb-6 text-center" style="color: var(--accent-primary);">게임 참가</h2>
@@ -1014,7 +1068,7 @@
         </div>
     </div>
 
-    <!-- PC Login Modal (New) -->
+     
     <div id="pc-login-modal" class="modal-backdrop fixed inset-0 flex items-center justify-center p-4 z-[90] hidden">
         <div class="modal-content rounded-md shadow-2xl p-8 w-full max-w-sm">
             <h3 class="text-xl font-bold mb-4 font-title" style="color: var(--accent-primary);">캐릭터 로그인</h3>
@@ -1029,29 +1083,28 @@
         </div>
     </div>
     
-    <!-- Character Selection Overlay -->
+     
     <div id="character-selection-overlay" class="flex flex-col justify-start fixed top-0 left-0 w-full z-40">
         <div id="selection-list-wrapper" class="overflow-hidden h-full flex items-center transition-opacity duration-300 ease-in-out">
             <div id="selection-list" class="flex mx-auto p-4 gap-4 max-w-7xl w-full overflow-x-auto whitespace-nowrap justify-start">
                  <div class="text-white/70 text-lg w-full text-center p-4">인증 중...</div>
             </div>
         </div>
-        <!-- NEW: Toggle button moved to the right -->
+         
         <button id="overlay-toggle" class="absolute top-full right-4 transform bg-gray-700/90 hover:bg-gray-600/90 text-white p-2 rounded-b-lg z-50 transition-colors shadow-lg">
              <svg id="toggle-icon" class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
         </button>
     </div>
     
-    <!-- Main Content Area -->
+     
     <div class="w-full max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
-        <!-- Left: Control Panel -->
-        <div class="panel lg:w-1/4 w-full p-6 shadow-lg flex flex-col">
+         
+         <div class="panel lg:w-1/4 w-full p-6 shadow-lg flex flex-col">
             <div>
                 <div class="flex justify-between items-center mb-2">
                     <h1 class="text-xl font-bold font-title" style="color: var(--accent-primary);">게임 상태</h1>
                 </div>
                 
-                <!-- UPDATED: Remaining Units Summary (Applied Stylish Box, now transparent) -->
                 <div id="unit-summary" class="mb-4">
                     <div id="remaining-pc" class="text-center">
                         <p class="text-xs text-gray-400">남은 아군</p>
@@ -1063,8 +1116,7 @@
                     </div>
                 </div>
 
-                <!-- Game ID Display (REMOVED from UI flow) -->
-                 <div id="game-id-container" class="hidden">
+                <div id="game-id-container" class="hidden">
                     <p class="text-xs font-semibold" style="color: var(--text-secondary);">게임 코드:</p>
                     <div class="flex items-center gap-2 mt-1">
                         <input readonly id="game-id-display" class="form-input text-center text-sm p-1" style="background-color: var(--bg-game-id);">
@@ -1073,15 +1125,12 @@
                         </button>
                     </div>
                 </div>
-                <!-- Auth Status (Hidden, moved to User Info Modal) -->
                 <div id="auth-status" class="hidden">
                     <p class="font-semibold text-gray-400">현재 인증:</p>
                     <span id="current-auth-char" class="text-yellow-400 font-bold">비로그인</span>
                     <button id="login-btn" class="text-xs ml-2 text-indigo-500 hover:text-indigo-300 hidden">로그인</button>
                     <button id="logout-btn" class="text-xs ml-2 text-red-500 hover:text-red-300 hidden">로그아웃</button>
                 </div>
-                <!-- End Hidden Elements -->
-
                 <div id="turn-status" class="mb-4 stylish-turn-box" >
                     <p class="text-sm font-semibold" style="color: var(--accent-primary);">현재 턴:</p>
                     <div id="current-turn-char" class="text-xl font-bold font-title" style="color: var(--accent-secondary);">준비 중...</div>
@@ -1091,24 +1140,30 @@
                      <p class="text-sm" style="color: var(--text-tertiary);">캐릭터를 선택하면 스킬이 표시됩니다.</p>
                 </div>
                 <div id="character-list" class="mt-4 flex-grow">
-                    <h2 class="text-lg font-bold pb-2 mb-2 font-title" style="color: var(--text-secondary); border-bottom: 1px solid var(--border-secondary);">캐릭터 상태</h2>
-                    <div id="char-list-content" class="max-h-96 overflow-y-auto space-y-2">
-                        <p style="color: var(--text-tertiary);" class="text-sm">게임에 참여해주세요...</p>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-auto pt-4">
-                <button id="leave-game-btn" class="w-full bg-red-600 font-bold py-2 px-4">게임 나가기</button>
-            </div>
+					<div id="char-list-header" class="flex justify-between items-center pb-2 mb-2 border-b border-border-secondary cursor-pointer lg:cursor-default">
+						<h2 class="text-lg font-bold font-title" style="color: var(--text-secondary);">캐릭터 상태</h2>
+						<svg id="char-list-toggle-icon" class="w-5 h-5 transition-transform lg:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+						</svg>
+					</div>
+					<div id="char-list-content" class="max-h-96 overflow-y-auto space-y-2 hidden lg:block">
+						<p style="color: var(--text-tertiary);" class="text-sm">게임에 참여해주세요...</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="mt-auto pt-4">
+				<button id="leave-game-btn" class="w-full bg-red-600 font-bold py-2 px-4">게임 나가기</button>
+			</div>
         </div>
 
-        <!-- Center: Game Board -->
+         
         <div class="lg:w-2/4 w-full flex items-center justify-center relative">
     <div id="game-board" class="shadow-inner"></div>
     <svg id="foreshadow-layer" class="absolute top-0 left-0 w-full h-full pointer-events-none z-30"></svg>
 </div>
 
-        <!-- Right: Game Log -->
+         
         <div id="log-panel" class="panel lg:w-1/4 w-full p-6 shadow-lg">
              <h2 class="text-lg font-bold pb-2 mb-4 font-title" style="color: var(--text-secondary); border-bottom: 1px solid var(--border-secondary);">게임 로그</h2>
              <ul id="game-log-list" class="h-[75vh] overflow-y-auto space-y-2 text-sm pr-2">
@@ -1117,7 +1172,7 @@
         </div>
     </div>
 
-    <!-- Modals -->
+     
     <div id="profile-modal" class="modal-backdrop fixed inset-0 flex items-center justify-center p-4 z-50 hidden"><div id="modal-content" class="w-full max-w-[900px]"></div></div>
     <div id="custom-modal" class="modal-backdrop fixed inset-0 flex items-center justify-center p-4 z-50 hidden"><div id="custom-modal-content" class="modal-content rounded-md shadow-2xl p-8 w-full max-w-sm"><h3 id="custom-modal-title" class="text-xl font-bold mb-4 font-title"></h3><p id="custom-modal-message" class="mb-6"></p><div id="custom-modal-buttons" class="flex justify-end gap-4"></div></div></div>
     <div id="admin-modal" class="modal-backdrop fixed inset-0 flex items-center justify-center p-4 z-[60] hidden"><div id="admin-modal-content" class="modal-content rounded-md shadow-2xl p-8 w-full max-w-3xl max-h-[90vh] overflow-y-auto"><div class="flex justify-between items-center mb-6"><h3 class="text-2xl font-bold font-title" style="color: var(--accent-primary);">관리자 패널</h3><button id="close-admin-modal-btn" class="hover:text-white text-3xl leading-none">&times;</button></div><div id="admin-skill-list" class="space-y-4"></div></div></div>
@@ -1134,15 +1189,15 @@
         </div>
     </div>
     
-    <!-- Map Edit Modal (New) -->
+     
     <div id="map-edit-modal" class="modal-backdrop fixed inset-0 flex items-center justify-center p-4 z-[65] hidden">
         <div class="modal-content rounded-md shadow-2xl p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <!-- X 버튼 추가 및 제목 컨테이너 수정 -->
+             
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-2xl font-bold font-title" style="color: var(--accent-primary);">맵 편집 모드 (관리자)</h3>
                 <button id="close-map-edit-modal-btn" class="hover:text-white text-3xl leading-none">&times;</button>
             </div>
-            <!-- End Modified header -->
+             
             <p class="mb-4 text-gray-400">보드 칸을 클릭하여 지형을 설정하세요. 준비 단계에서만 작동합니다.</p>
             <div class="space-y-4">
                 <div class="flex gap-4 p-4 border border-gray-700 rounded-md">
@@ -1163,6 +1218,7 @@
     import { getFirestore, collection, onSnapshot, doc, updateDoc, query, getDocs, writeBatch, getDoc, setDoc, addDoc, serverTimestamp, orderBy, deleteDoc, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // IMPORTANT: In a real environment, these configs should be loaded securely.
+//여기를 수정해주세요—------ Firebase 생성코드
     const firebaseConfig = {
         apiKey: "AIzaSyDwTxRX9oUSYVKlhX2k2s7147vQ4MGHj2g",
         authDomain: "battlemap-5525d.firebaseapp.com",
@@ -1180,11 +1236,14 @@
     const BOARD_SIZE = 10;
     let characters = [];
     let selectedCharacterId = null;
+    let foreshadowingAction = null;
     let userId = null;
     let gameId = null; 
     let unsubscribeChars = null;
     let unsubscribeSettings = null;
     let unsubscribeLogs = null;
+    let unsubscribeCombatEvents = null;
+const combatTextStartTime = new Date();
     let previousTurnCharId = null; 
     let isBoardInitialized = false; 
     let selectedSkill = null; 
@@ -1294,6 +1353,8 @@
     const mapEditModal = document.getElementById('map-edit-modal'); // NEW map edit modal
     const userInfoBtn = document.getElementById('user-info-btn');
     const userInfoModal = document.getElementById('user-info-modal');
+    const loginStatusBtn = document.getElementById('login-status-btn');
+const loginStatusModal = document.getElementById('login-status-modal');
 
 
     // --- Game Lobby ---
@@ -1319,30 +1380,31 @@
 
     async function createGame() { await joinGame(generateGameId(), true); }
     async function joinGame(id, isNewGame = false) {
-        if (!id || id.trim().length === 0) { showCustomModal("오류", "유효한 게임 코드를 입력해주세요.", [{ text: "확인", class: "bg-red-600" }]); return; }
-        gameId = id.trim().toUpperCase();
+    if (!id || id.trim().length === 0) { showCustomModal("오류", "유효한 게임 코드를 입력해주세요.", [{ text: "확인", class: "bg-red-600" }]); return; }
+    gameId = id.trim().toUpperCase();
 
-        if (!isNewGame) {
-            const docSnap = await getDoc(doc(db, "games", gameId));
-            if (!docSnap.exists()) { showCustomModal("참가 실패", "존재하지 않는 게임 코드입니다.", [{ text: "확인", class: "bg-red-600" }]); gameId = null; return; }
-        }
-
-        localStorage.setItem('currentGameId', gameId);
-        lobbyModal.classList.add('hidden');
-        gameIdDisplay.value = gameId;
-        // gameIdContainer.classList.remove('hidden'); // REMOVED: Game ID container is removed from this flow
-
-        if (isNewGame) {
-            await deleteLogsCollection(gameId);
-            await seedInitialSettings(gameId);
-            await seedInitialCharacters(gameId);
-            // NEW: Seed initial board tiles (all normal)
-            await setDoc(doc(db, 'games', gameId, 'board', 'tiles'), { tiles: {} });
-            await logAction("⚔️ 새로운 게임이 시작되었습니다! 게임 로그가 초기화되었습니다.", "system");
-        }
-        listenForGameData(gameId);
-        openPCLoginModal();
+    if (!isNewGame) {
+        const docSnap = await getDoc(doc(db, "games", gameId));
+        if (!docSnap.exists()) { showCustomModal("참가 실패", "존재하지 않는 게임 코드입니다.", [{ text: "확인", class: "bg-red-600" }]); gameId = null; return; }
     }
+
+    localStorage.setItem('currentGameId', gameId);
+    lobbyModal.classList.add('hidden');
+    gameIdDisplay.value = gameId;
+
+    if (isNewGame) {
+        await deleteLogsCollection(gameId);
+        await seedInitialSettings(gameId);
+        await seedInitialCharacters(gameId);
+        await setDoc(doc(db, 'games', gameId, 'board', 'tiles'), { tiles: {} });
+        await logAction("⚔️ 새로운 게임이 시작되었습니다! 게임 로그가 초기화되었습니다.", "system");
+    }
+    
+    listenForGameData(gameId);
+    listenForCombatTextEvents(gameId); 
+    
+    openPCLoginModal();
+}
     function leaveGame() { localStorage.removeItem('currentGameId', gameId); location.reload(); }
 
     // --- Authentication ---
@@ -1361,6 +1423,7 @@
             skills: DEFAULT_SKILLS, 
             currentTurnIndex: 0, 
             currentTurnCharId: null, 
+//여기를 수정해주세요 : 관리자 비밀번호
             adminPassword: "0000", 
             gameState: 'PREPARATION', 
             round: 1, 
@@ -1371,39 +1434,33 @@
         }); 
     }
     async function seedInitialCharacters(gameId) {
-        const charCollectionRef = collection(db, "games", gameId, "characters");
-        const snapshot = await getDocs(charCollectionRef);
-        if (snapshot.empty) {
-            const batch = writeBatch(db);
-            const pcData = [ 
-                { name: "User1", img: "", type: 'PC', size: 1, skills: ['slash', 'shoot', 'heal', 'hp_transfer'], statusEffects: [
-        // { id: 'defenseUp', name: '결계 강화', turnsRemaining: 2, value: 1.5 },
-        // { id: 'rooted', name: '속박의 사슬', turnsRemaining: 1 }
-    ], order: 1 }, // Added hp_transfer
-                { name: "User2", img: "", type: 'PC', size: 1, skills: ['crosscut', 'resurrect', 'mp_transfer'], statusEffects: [
-        // { id: 'defenseUp', name: '결계 강화', turnsRemaining: 2, value: 1.5 },
-        // { id: 'rooted', name: '속박의 사슬', turnsRemaining: 1 }
-    ], order: 3 }, // Added resurrect, mp_transfer
-            ];
-            const enemyData = [ 
-                { name: "Enemy1", img: "", type: 'ENEMY', size: 1, skills: ['slash'], statusEffects: [
-        // { id: 'defenseUp', name: '결계 강화', turnsRemaining: 2, value: 1.5 },
-        // { id: 'rooted', name: '속박의 사슬', turnsRemaining: 1 }
-    ], order: 2 }, 
-                { name: "Enemy2", img: "", type: 'ENEMY', size: 2, skills: ['stomp'], statusEffects: [
-        // { id: 'defenseUp', name: '결계 강화', turnsRemaining: 2, value: 1.5 },
-        // { id: 'rooted', name: '속박의 사슬', turnsRemaining: 1 }
-    ], order: 4 }, 
-            ];
-            [...pcData, ...enemyData].forEach(char => {
-                const charPassword = char.type === 'PC' ? DEFAULT_PC_PASSWORD : ''; 
-                // ADDED MP stats
-                const newChar = { name: char.name, imageUrl: char.img || '', type: char.type, size: char.size, hp: 100, maxHp: 100, mp: 50, maxMp: 50, minAttack: 12, maxAttack: 18, minDefense: 3, maxDefense: 7, x: null, y: null, skills: char.skills || [], turnOrder: char.order, password: charPassword, isAuto: false, statusEffects: [] };
-                batch.set(doc(charCollectionRef), newChar);
-            });
-            await batch.commit();
-        }
+    const charCollectionRef = collection(db, "games", gameId, "characters");
+    const snapshot = await getDocs(charCollectionRef);
+    if (snapshot.empty) {
+        const batch = writeBatch(db);
+        const pcData = [ 
+            { name: "User1", img: "", type: 'PC', size: 1, skills: ['slash', 'shoot', 'heal', 'hp_transfer'], order: 1 },
+            { name: "User2", img: "", type: 'PC', size: 1, skills: ['crosscut', 'resurrect', 'mp_transfer'], order: 3 },
+        ];
+        const enemyData = [ 
+            { name: "Enemy1", img: "", type: 'ENEMY', size: 1, skills: ['slash'], order: 2 }, 
+            { name: "Enemy2", img: "", type: 'ENEMY', size: 2, skills: ['stomp'], order: 4 }, 
+        ];
+        [...pcData, ...enemyData].forEach(char => {
+            const charPassword = char.type === 'PC' ? DEFAULT_PC_PASSWORD : ''; 
+            const newChar = { 
+                name: char.name, imageUrl: char.img || '', type: char.type, size: char.size, 
+                hp: 100, maxHp: 100, mp: 50, maxMp: 50, 
+                minAttack: 12, maxAttack: 18, minDefense: 3, maxDefense: 7, 
+                x: null, y: null, skills: char.skills || [], turnOrder: char.order, 
+                password: charPassword, isAuto: false, statusEffects: [],
+                isLoggedIn: false // [추가] 로그인 상태 필드 추가
+            };
+            batch.set(doc(charCollectionRef), newChar);
+        });
+        await batch.commit();
     }
+}
     
     // --- Data Listeners ---
     function listenForGameData(gameId) {
@@ -1414,24 +1471,31 @@
     unsubscribeSettings = onSnapshot(doc(db, 'games', gameId), async (docSnap) => { // async 추가
         if (docSnap.exists()) {
             const data = docSnap.data();
+            const oldGameState = gameState; // [수정] 이전 gameState를 기억합니다.
             const oldRoundPhase = roundPhase;
-            const oldGameState = gameState;
 
             SKILLS = data.skills || {};
             gameState = data.gameState || 'PREPARATION';
+            roundPhase = data.roundPhase || 'PLAYER_PHASE';
+
+            if (oldGameState === 'STARTED' && gameState === 'ENDED' && data.gameResult) {
+                showGameSummaryModal(data.gameResult.title, data.gameResult.message);
+            }
+
             if (oldGameState === 'PREPARATION' && gameState === 'STARTED') {
                 showBannerAnnouncement("FIGHT!", "게임 시작", '2rem', '4rem');
             }
-            roundPhase = data.roundPhase || 'PLAYER_PHASE';
             round = data.round || 1;
             maxRounds = data.maxRounds || 0;
             isAdminMoveAllowed = data.isAdminMoveAllowed !== undefined ? data.isAdminMoveAllowed : true;
+            
+            foreshadowingAction = data.foreshadowingAction || null;
+            
             boardBackgroundImage = data.boardBackgroundImage || '';
             pageBackgroundImage = data.pageBackgroundImage || '';
             document.body.style.setProperty('--page-background-image', pageBackgroundImage ? `url('${pageBackgroundImage}')` : 'none');
 
             const turnCharId = data.currentTurnCharId;
-
             actingEnemyId = data.actingEnemyId || null;
 
             if (gameState === 'STARTED' && oldRoundPhase !== roundPhase) {
@@ -1441,129 +1505,117 @@
                 adminSelectedEnemyId = null;
 
                 switch (roundPhase) {
-    case 'ENEMY_FORESHADOW':
-    showBannerAnnouncement(`Round ${round}`, "적 행동 예고");
-    if (isAdmin) {
-        determineEnemyNextActions();
-    }
-    break;
-    
-     case 'PLAYER_PHASE': { 
-    showBannerAnnouncement(`Round ${round}`, "아군 턴 시작");
-        if (isAdmin) {
-        const livingPCs = characters.filter(c => c.type === 'PC' && c.hp > 0 && c.x !== null);
-        if (livingPCs.length > 0) {
-            const batch = writeBatch(db);
-            let mpWasRecovered = false;
-            
-            for (const pc of livingPCs) {
-                const charRef = doc(db, 'games', gameId, 'characters', pc.id);
-                let updates = {};
-
-                // MP 회복 로직
-                const newMp = Math.min(pc.maxMp, pc.mp + MP_REGEN_PER_TURN);
-                if (newMp > pc.mp) {
-                    updates.mp = newMp;
-                    mpWasRecovered = true;
-                }
-
-                const effects = pc.statusEffects || [];
-                if (effects.length > 0) {
-                    const isStunned = effects.some(effect => effect.id === 'stunned');
-                    if (isStunned) {
-                        logAction(`💫 ${pc.name}은(는) [행동 불가] 상태이므로 턴이 자동으로 넘어갑니다.`, "system");
-                        updates.hasActedThisRound = true;
-                    }
-
-                    let finalHp = pc.hp;
-                    let hpChanged = false;
-                    effects.forEach(effect => {
-                        if (effect.effectType === 'heal') {
-                            const healAmount = effect.value || 15;
-                            finalHp = Math.min(pc.maxHp, finalHp + healAmount);
-                            hpChanged = true;
-                            logAction(`🌿 ${pc.name}이(가) [${effect.name}] 효과로 **${healAmount} HP**를 회복했습니다!`, "heal");
-                        } else if (effect.effectType === 'damage') {
-                            const damageAmount = effect.value || 10;
-                            finalHp = Math.max(0, finalHp - damageAmount);
-                            hpChanged = true;
-                            logAction(`☠️ ${pc.name}이(가) [${effect.name}] 효과로 **${damageAmount} 피해**를 입었습니다!`, "damage");
+                    case 'ENEMY_FORESHADOW':
+                        showBannerAnnouncement(`Round ${round}`, "적 행동 예고");
+                        if (isAdmin) {
+                            determineEnemyNextActions();
                         }
-                    });
-
-                    if (hpChanged) {
-                        updates.hp = finalHp;
-                    }
-                }
-                
-                if (Object.keys(updates).length > 0) {
-                    batch.update(charRef, updates);
-                }
-            }
-
-            // 모든 변경사항을 한번에 적용
-            await batch.commit();
-            if (mpWasRecovered) {
-                    await logAction(`💧 모든 아군이 ${MP_REGEN_PER_TURN}의 MP를 회복했습니다.`, "system");
-            }
-        }
-        }
-        break;
-    }
-        
-    case 'ENEMY_EXECUTION': { 
-    showBannerAnnouncement(`Round ${round}`, "적군 턴 시작");
-    if (isAdmin) {
-        const livingEnemies = characters.filter(c => c.type === 'ENEMY' && c.hp > 0 && c.x !== null);
-        if (livingEnemies.length > 0) {
-            const batch = writeBatch(db);
-            let mpWasRecovered = false;
-
-            for (const enemy of livingEnemies) {
-                const charRef = doc(db, 'games', gameId, 'characters', enemy.id);
-                let updates = {};
-
-                const newMp = Math.min(enemy.maxMp, enemy.mp + MP_REGEN_PER_TURN);
-                if (newMp > enemy.mp) {
-                    updates.mp = newMp;
-                    mpWasRecovered = true;
-                }
-                const effects = enemy.statusEffects || [];
-                if (effects.length > 0) {
-                    let finalHp = enemy.hp;
-                    let hpChanged = false;
-                    effects.forEach(effect => {
-                        if (effect.effectType === 'heal') {
-                            const healAmount = effect.value || 15;
-                            finalHp = Math.min(enemy.maxHp, finalHp + healAmount);
-                            hpChanged = true;
-                            logAction(`🌿 ${enemy.name}이(가) [${effect.name}] 효과로 **${healAmount} HP**를 회복했습니다!`, "heal");
-                        } else if (effect.effectType === 'damage') {
-                            const damageAmount = effect.value || 10;
-                            finalHp = Math.max(0, finalHp - damageAmount);
-                            hpChanged = true;
-                            logAction(`☠️ ${enemy.name}이(가) [${effect.name}] 효과로 **${damageAmount} 피해**를 입었습니다!`, "damage");
+                        break;
+                    
+                    case 'PLAYER_PHASE': { 
+                        showBannerAnnouncement(`Round ${round}`, "아군 턴 시작");
+                        if (isAdmin) {
+                            const livingPCs = characters.filter(c => c.type === 'PC' && c.hp > 0 && c.x !== null);
+                            if (livingPCs.length > 0) {
+                                const batch = writeBatch(db);
+                                let mpWasRecovered = false;
+                                
+                                for (const pc of livingPCs) {
+                                    const charRef = doc(db, 'games', gameId, 'characters', pc.id);
+                                    let updates = {};
+                                    const newMp = Math.min(pc.maxMp, pc.mp + MP_REGEN_PER_TURN);
+                                    if (newMp > pc.mp) {
+                                        updates.mp = newMp;
+                                        mpWasRecovered = true;
+                                    }
+                                    const effects = pc.statusEffects || [];
+                                    if (effects.length > 0) {
+                                        const isStunned = effects.some(effect => effect.id === 'stunned');
+                                        if (isStunned) {
+                                            logAction(`💫 ${pc.name}은(는) [행동 불가] 상태이므로 턴이 자동으로 넘어갑니다.`, "system");
+                                            updates.hasActedThisRound = true;
+                                        }
+                                        let finalHp = pc.hp;
+                                        let hpChanged = false;
+                                        effects.forEach(effect => {
+                                            if (effect.effectType === 'heal') {
+                                                const healAmount = effect.value || 15;
+                                                finalHp = Math.min(pc.maxHp, finalHp + healAmount);
+                                                hpChanged = true;
+                                                logAction(`🌿 ${pc.name}이(가) [${effect.name}] 효과로 **${healAmount} HP**를 회복했습니다!`, "heal");
+                                            } else if (effect.effectType === 'damage') {
+                                                const damageAmount = effect.value || 10;
+                                                finalHp = Math.max(0, finalHp - damageAmount);
+                                                hpChanged = true;
+                                                logAction(`☠️ ${pc.name}이(가) [${effect.name}] 효과로 **${damageAmount} 피해**를 입었습니다!`, "damage");
+                                            }
+                                        });
+                                        if (hpChanged) {
+                                            updates.hp = finalHp;
+                                        }
+                                    }
+                                    if (Object.keys(updates).length > 0) {
+                                        batch.update(charRef, updates);
+                                    }
+                                }
+                                await batch.commit();
+                                if (mpWasRecovered) {
+                                        await logAction(`💧 모든 아군이 ${MP_REGEN_PER_TURN}의 MP를 회복했습니다.`, "system");
+                                }
+                            }
                         }
-                    });
-
-                    if (hpChanged) {
-                        updates.hp = finalHp;
+                        break;
                     }
+                    
+                    case 'ENEMY_EXECUTION': { 
+                        showBannerAnnouncement(`Round ${round}`, "적군 턴 시작");
+                        if (isAdmin) {
+                            const livingEnemies = characters.filter(c => c.type === 'ENEMY' && c.hp > 0 && c.x !== null);
+                            if (livingEnemies.length > 0) {
+                                const batch = writeBatch(db);
+                                let mpWasRecovered = false;
+                                for (const enemy of livingEnemies) {
+                                    const charRef = doc(db, 'games', gameId, 'characters', enemy.id);
+                                    let updates = {};
+                                    const newMp = Math.min(enemy.maxMp, enemy.mp + MP_REGEN_PER_TURN);
+                                    if (newMp > enemy.mp) {
+                                        updates.mp = newMp;
+                                        mpWasRecovered = true;
+                                    }
+                                    const effects = enemy.statusEffects || [];
+                                    if (effects.length > 0) {
+                                        let finalHp = enemy.hp;
+                                        let hpChanged = false;
+                                        effects.forEach(effect => {
+                                            if (effect.effectType === 'heal') {
+                                                const healAmount = effect.value || 15;
+                                                finalHp = Math.min(enemy.maxHp, finalHp + healAmount);
+                                                hpChanged = true;
+                                                logAction(`🌿 ${enemy.name}이(가) [${effect.name}] 효과로 **${healAmount} HP**를 회복했습니다!`, "heal");
+                                            } else if (effect.effectType === 'damage') {
+                                                const damageAmount = effect.value || 10;
+                                                finalHp = Math.max(0, finalHp - damageAmount);
+                                                hpChanged = true;
+                                                logAction(`☠️ ${enemy.name}이(가) [${effect.name}] 효과로 **${damageAmount} 피해**를 입었습니다!`, "damage");
+                                            }
+                                        });
+                                        if (hpChanged) {
+                                            updates.hp = finalHp;
+                                        }
+                                    }
+                                    if (Object.keys(updates).length > 0) {
+                                        batch.update(charRef, updates);
+                                    }
+                                } 
+                                await batch.commit();
+                                if (mpWasRecovered) {
+                                    await logAction(`💧 모든 적군이 ${MP_REGEN_PER_TURN}의 MP를 회복했습니다.`, "system");
+                                }
+                            }
+                        }
+                        break;
+                    } 
                 }
-                
-                if (Object.keys(updates).length > 0) {
-                    batch.update(charRef, updates);
-                }
-            } 
-            await batch.commit();
-            if (mpWasRecovered) {
-                await logAction(`💧 모든 적군이 ${MP_REGEN_PER_TURN}의 MP를 회복했습니다.`, "system");
-            }
-        }
-        }
-        break;
-    } 
-}
             }
             
             const currentTurnChar = characters.find(c => c.id === turnCharId);
@@ -1606,6 +1658,46 @@
     });
 }
 
+async function triggerCombatText(character, text, type) {
+    if (!gameId || !character) return;
+    try {
+        await addDoc(collection(db, "games", gameId, "combatEvents"), {
+            characterId: character.id,
+            text: text,
+            type: type,
+            timestamp: serverTimestamp()
+        });
+    } catch (error) {
+        console.error("Error triggering combat text:", error);
+    }
+}
+
+function listenForCombatTextEvents(gameId) {
+    if (unsubscribeCombatEvents) unsubscribeCombatEvents();
+
+    const q = query(
+        collection(db, "games", gameId, "combatEvents"),
+        orderBy("timestamp")
+    );
+
+    unsubscribeCombatEvents = onSnapshot(q, (snapshot) => {
+        snapshot.docChanges().forEach(async (change) => {
+            if (change.type === "added") {
+                const eventData = change.doc.data();
+                const character = characters.find(c => c.id === eventData.characterId);
+                if (character) {
+                    showCombatText(character, eventData.text, eventData.type);
+                }
+                
+                try {
+                    await deleteDoc(change.doc.ref);
+                } catch (error) {
+                    console.error("Error deleting combat text event:", error);
+                }
+            }
+        });
+    });
+}
        const delay = ms => new Promise(res => setTimeout(res, ms));
     async function logAction(message, type = "system") { if (gameId) await addDoc(collection(db, "games", gameId, "logs"), { message, type, timestamp: serverTimestamp() }); }
     async function advanceRoundPhase() {
@@ -1622,12 +1714,22 @@
             const effects = char.statusEffects || [];
             if (effects.length > 0) {
                 const updatedEffects = effects.reduce((acc, effect) => {
-                    const newTurnsRemaining = effect.turnsRemaining - 1;
-                    if (newTurnsRemaining > 0) {
-                        acc.push({ ...effect, turnsRemaining: newTurnsRemaining });
+                    
+                 
+                    if (effect.isNew) {
+                        const { isNew, ...rest } = effect; 
+                        acc.push(rest);
                     } else {
-                        logAction(`⏱️ ${char.name}의 [${effect.name}] 효과가 사라졌습니다.`, "system");
+                
+                        const newTurnsRemaining = effect.turnsRemaining - 1;
+                        if (newTurnsRemaining > 0) {
+                            acc.push({ ...effect, turnsRemaining: newTurnsRemaining });
+                        } else {
+                            logAction(`⏱️ ${char.name}의 [${effect.name}] 효과가 사라졌습니다.`, "system");
+                        }
                     }
+                
+
                     return acc;
                 }, []);
                 const charRef = doc(db, 'games', gameId, 'characters', char.id);
@@ -1661,37 +1763,64 @@ async function determineEnemyNextActions() {
     const livingEnemies = characters.filter(c => c.type === 'ENEMY' && c.hp > 0 && c.x !== null);
     const livingPCs = characters.filter(c => c.type === 'PC' && c.hp > 0 && c.x !== null);
 
-    if (livingPCs.length === 0) {
-        console.log("공격할 아군이 없어 적 행동 설정을 건너뜁니다.");
+    if (livingPCs.length === 0 && livingEnemies.length <= 1) {
+        console.log("행동할 대상이 없어 적 AI 설정을 건너뜁니다.");
         return;
     }
 
     const batch = writeBatch(db);
 
     livingEnemies.forEach(enemy => {
-        // 1. 가장 가까운 아군 찾기
-        let closestTarget = null;
-        let minDistance = Infinity;
+        let decisionMade = false;
 
-        livingPCs.forEach(pc => {
-            const distance = getDistance(enemy, pc);
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestTarget = pc;
-            }
-        });
+        const healSkillId = enemy.skills.find(id => SKILLS[id]?.category === 'Heal');
+        
+        if (healSkillId) {
+            const healSkill = SKILLS[healSkillId];
+            const potentialHealTargets = livingEnemies.filter(ally =>
+                ally.id !== enemy.id && // 자기 자신은 제외
+                ally.hp < ally.maxHp * 0.7 && // 체력이 70% 미만
+                getDistance(enemy, ally) <= healSkill.range // 스킬 사거리 내에 있음
+            );
 
-        if (closestTarget) {
-            const attackSkillId = enemy.skills.find(id => SKILLS[id]?.category === 'Attack');
+            if (potentialHealTargets.length > 0) {
+                potentialHealTargets.sort((a, b) => (a.hp / a.maxHp) - (b.hp / b.maxHp));
+                const healTarget = potentialHealTargets[0];
 
-            if (attackSkillId) {
                 const enemyRef = doc(db, 'games', gameId, 'characters', enemy.id);
                 batch.update(enemyRef, {
                     nextAction: {
-                        targetId: closestTarget.id,
-                        skillId: attackSkillId
+                        targetId: healTarget.id,
+                        skillId: healSkillId
                     }
                 });
+                decisionMade = true; 
+            }
+        }
+        if (!decisionMade && livingPCs.length > 0) {
+            let closestTarget = null;
+            let minDistance = Infinity;
+
+            livingPCs.forEach(pc => {
+                const distance = getDistance(enemy, pc);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestTarget = pc;
+                }
+            });
+
+            if (closestTarget) {
+                const attackSkillId = enemy.skills.find(id => SKILLS[id]?.category === 'Attack');
+
+                if (attackSkillId) {
+                    const enemyRef = doc(db, 'games', gameId, 'characters', enemy.id);
+                    batch.update(enemyRef, {
+                        nextAction: {
+                            targetId: closestTarget.id,
+                            skillId: attackSkillId
+                        }
+                    });
+                }
             }
         }
     });
@@ -1754,11 +1883,9 @@ async function executeSingleEnemyAction(enemyId) {
         }
     }
     
-    // 행동 완료 후 nextAction을 null로 만들어 리스트에서 사라지게 함
     await updateDoc(doc(db, 'games', gameId, 'characters', enemy.id), { nextAction: null });
     
     currentlyActingEnemyId = null;
-    // render()는 onSnapshot 리스너가 DB 변경을 감지하여 자동으로 호출해줍니다.
 }
     async function executeEnemyActions() {
     await logAction(`🔥 적들이 행동을 개시합니다!`, "system");
@@ -1768,45 +1895,69 @@ async function executeSingleEnemyAction(enemyId) {
         await logAction(`💫 ${enemy.name}은(는) [행동 불가] 상태이므로 행동하지 못합니다.`, "system");
     }
 
-    // [수정] 행동할 적 목록을 만들 때, 행동 불가(stunned) 상태인 적은 제외합니다.
     const enemiesToAct = characters.filter(c => c.type === 'ENEMY' && c.hp > 0 && c.nextAction && !c.statusEffects?.some(e => e.id === 'stunned'));
 
     for (const enemy of enemiesToAct) {
         await updateDoc(doc(db, 'games', gameId), { actingEnemyId: enemy.id });
         await delay(700);
 
-        // ... (기존 이동 및 공격 로직은 그대로 유지) ...
         const target = characters.find(c => c.id === enemy.nextAction.targetId);
         const skill = SKILLS[enemy.nextAction.skillId];
 
-        if (!target || target.hp <= 0 || !skill) {
+        if (!target || !skill) {
             await updateDoc(doc(db, 'games', gameId, 'characters', enemy.id), { nextAction: null });
             continue;
         }
 
         let bestMovePos = { x: enemy.x, y: enemy.y };
-        const moveRange = enemy.moveRange || SKILLS['move']?.range || 1;
+        const moveRange = enemy.moveRange !== undefined ? enemy.moveRange : (SKILLS['move']?.range || 1);
         const attackRange = skill.range;
-        
-        if (getDistance(enemy, target) > attackRange) {
-            let minMoveDistance = Infinity;
+
+        const phantomEnemy = { ...enemy };
+        if (!isAttackPossible(phantomEnemy, target, attackRange)) {
+            let minMoveDistance = Infinity; // 공격하기 위해 움직여야 하는 최소 거리
             let foundAttackSpot = false;
 
+            // 1. 공격 가능한 최적의 위치 탐색
             for (let dy = -moveRange; dy <= moveRange; dy++) {
                 for (let dx = -moveRange; dx <= moveRange; dx++) {
                     if (Math.abs(dx) + Math.abs(dy) > moveRange) continue;
-                    
+
                     const moveX = enemy.x + dx;
                     const moveY = enemy.y + dy;
 
                     if (!canPlaceCharacter(enemy, moveX, moveY)) continue;
                     
-                    const movedPos = { x: moveX, y: moveY };
-                    if (getDistance(movedPos, target) <= attackRange) {
+                    const phantomAttacker = { ...enemy, x: moveX, y: moveY };
+                    if (isAttackPossible(phantomAttacker, target, attackRange)) {
                         foundAttackSpot = true;
                         const moveDistance = Math.abs(dx) + Math.abs(dy);
                         if (moveDistance < minMoveDistance) {
                             minMoveDistance = moveDistance;
+                            bestMovePos = { x: moveX, y: moveY };
+                        }
+                    }
+                }
+            }
+
+            // 2. 공격 가능한 위치가 없을 경우, 목표를 향해 최대한 이동
+            if (!foundAttackSpot) {
+                let minTargetDistance = getDistance(enemy, target); // 목표까지의 현재 거리
+
+                for (let dy = -moveRange; dy <= moveRange; dy++) {
+                    for (let dx = -moveRange; dx <= moveRange; dx++) {
+                        if (Math.abs(dx) + Math.abs(dy) > moveRange) continue;
+
+                        const moveX = enemy.x + dx;
+                        const moveY = enemy.y + dy;
+
+                        if (!canPlaceCharacter(enemy, moveX, moveY)) continue;
+                        
+                        const movedPos = { x: moveX, y: moveY };
+                        const targetDistance = getDistance(movedPos, target);
+                        
+                        if (targetDistance < minTargetDistance) {
+                            minTargetDistance = targetDistance;
                             bestMovePos = movedPos;
                         }
                     }
@@ -1814,35 +1965,71 @@ async function executeSingleEnemyAction(enemyId) {
             }
         }
         
+        // 최종 결정된 위치로 이동
         if (bestMovePos.x !== enemy.x || bestMovePos.y !== enemy.y) {
             await logAction(`🏃 ${enemy.name}이(가) 이동합니다.`, "move");
             await updateDoc(doc(db, 'games', gameId, 'characters', enemy.id), { x: bestMovePos.x, y: bestMovePos.y });
             await delay(1000);
         }
 
-        const updatedEnemy = characters.find(c => c.id === enemy.id); 
+        const updatedEnemy = characters.find(c => c.id === enemy.id);
         const updatedTarget = characters.find(c => c.id === target.id);
 
-        if (updatedTarget && updatedTarget.hp > 0 && getDistance(updatedEnemy, updatedTarget) <= attackRange) {
-            await executeSkill(updatedEnemy, updatedTarget, skill.id, false);
+        if (updatedTarget && updatedTarget.hp > 0 && isAttackPossible(updatedEnemy, updatedTarget, attackRange)) {
+            await updateDoc(doc(db, 'games', gameId), {
+                foreshadowingAction: {
+                    charId: updatedEnemy.id,
+                    skillId: skill.id
+                }
+            });
+            await delay(1200);
+
+            await executeSkill(updatedEnemy, updatedTarget, skill.id);
+
+            await updateDoc(doc(db, 'games', gameId), {
+                foreshadowingAction: null
+            });
             await delay(1000);
+        } else if (bestMovePos.x !== enemy.x || bestMovePos.y !== enemy.y) {
+            // 이동은 했지만 공격은 못한 경우
+            await logAction(`...${enemy.name}이(가) ${target.name}을(를) 향해 접근합니다.`, "move");
+            await delay(500);
         } else {
+            // 이동도, 공격도 못한 경우
             await logAction(`...하지만 ${enemy.name}의 공격 범위에 대상이 없습니다!`, "system");
             await delay(500);
         }
         
         await updateDoc(doc(db, 'games', gameId, 'characters', enemy.id), { nextAction: null });
-        
         await updateDoc(doc(db, 'games', gameId), { actingEnemyId: null });
     }
 
     logAction("✅ 모든 적의 행동이 종료되었습니다.", "system");
     await delay(500);
-    
+
     advanceRoundPhase();
 }
+function showCombatText(character, text, type) {
+    if (!character || character.x === null) return;
 
-// [신규] 예고선을 그리는 함수
+    const token = document.querySelector(`.character-token[data-char-id="${character.id}"]`);
+    if (!token) return;
+
+    const tokenRect = token.getBoundingClientRect();
+    
+    const textElement = document.createElement('div');
+    textElement.classList.add('combat-text', type);
+    textElement.textContent = text;
+
+    document.body.appendChild(textElement);
+    textElement.style.left = `${tokenRect.left + tokenRect.width / 2}px`;
+    textElement.style.top = `${tokenRect.top}px`;
+
+    setTimeout(() => {
+        textElement.remove();
+    }, 1500);
+}
+
 function renderForeshadowing() {
     const svgLayer = document.getElementById('foreshadow-layer');
     const boardRect = gameBoard.getBoundingClientRect();
@@ -1937,6 +2124,32 @@ function renderForeshadowing() {
         if (!pos1 || !pos2) return Infinity;
         return Math.abs(pos1.x - pos2.x) + Math.abs(pos1.y - pos2.y);
     }
+    // [추가] 두 캐릭터의 크기를 모두 고려하여 실제 공격 가능한지 판단하는 함수
+function isAttackPossible(attacker, target, attackRange) {
+    if (!attacker || !target) return false;
+    const attackerSize = attacker.size || 1;
+    const targetSize = target.size || 1;
+
+    // 공격자가 차지하는 모든 칸을 순회
+    for (let ax = 0; ax < attackerSize; ax++) {
+        for (let ay = 0; ay < attackerSize; ay++) {
+            // 대상이 차지하는 모든 칸을 순회
+            for (let tx = 0; tx < targetSize; tx++) {
+                for (let ty = 0; ty < targetSize; ty++) {
+                    const attackerCell = { x: attacker.x + ax, y: attacker.y + ay };
+                    const targetCell = { x: target.x + tx, y: target.y + ty };
+                    
+                    // 두 칸 사이의 거리가 공격 범위 내에 있으면 즉시 true 반환
+                    if (getDistance(attackerCell, targetCell) <= attackRange) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    // 모든 칸을 확인해도 공격 가능한 경우가 없으면 false 반환
+    return false;
+}
 
     // 자동 턴을 실행하는 메인 AI 함수
     async function runAutoTurn(character) {
@@ -2197,7 +2410,7 @@ function renderForeshadowing() {
     const skill = SKILLS[skillId];
     if (!skill) return;
     
-    await updateMP(attacker, -skill.mpCost);
+    if (skill.mpCost > 0) await updateMP(attacker, -skill.mpCost);
 
     const defenderToken = document.querySelector(`.character-token[data-char-id="${defender.id}"]`);
     if (defenderToken) {
@@ -2247,7 +2460,8 @@ function renderForeshadowing() {
 
     const finalDamage = Math.max(1, Math.round((finalAttack * skill.multiplier) - finalDefense));
     const newHp = await updateHP(defender, -finalDamage, "damage");
-    
+        await triggerCombatText(defender, `-${finalDamage.toFixed(0)}`, 'damage');
+
     let bonusText = "";
     if (attackBonus > 0) bonusText += `+공격 ${attackBonus.toFixed(0)}`;
     if (defenseBonus > 0) bonusText += (bonusText ? ", " : "") + `-방어 ${defenseBonus.toFixed(0)}`;
@@ -2257,75 +2471,84 @@ function renderForeshadowing() {
     await logAction(message, "damage");
     
     return true;
+}
+    
+    async function applyHealOrSupport(caster, target, skillId) {
+    const skill = SKILLS[skillId];
+    if (!skill) return false;
+    
+    const isResurrect = skill.targetType === 'ALLY_DEAD';
+    const isHpTransfer = skillId === 'hp_transfer';
+    const isMpTransfer = skillId === 'mp_transfer';
+    
+    if (caster.mp < skill.mpCost || (isHpTransfer && caster.hp <= skill.hpCost)) {
+         const resource = isHpTransfer ? 'HP' : 'MP';
+         const cost = isHpTransfer ? skill.hpCost : skill.mpCost;
+         const current = isHpTransfer ? caster.hp : caster.mp;
+         await logAction(`⚠️ ${caster.name}이(가) ${resource}가 부족하여 ${skill.name}을(를) 시전하지 못했습니다. (필요: ${cost} ${resource}, 현재: ${current} ${resource})`, "system");
+         return false;
     }
     
-    // --- Refactored Apply Heal/Support ---
-    async function applyHealOrSupport(caster, target, skillId) {
-        const skill = SKILLS[skillId];
-        if (!skill) return false;
-        
-        const isResurrect = skillId === 'ALLY_DEAD';
-        const isHpTransfer = skillId === 'hp_transfer';
-        const isMpTransfer = skillId === 'mp_transfer';
-        
-        // MP/HP Cost Check
-        if (caster.mp < skill.mpCost || (isHpTransfer && caster.hp <= skill.hpCost)) {
-             const resource = isHpTransfer ? 'HP' : 'MP';
-             const cost = isHpTransfer ? skill.hpCost : skill.mpCost;
-             const current = isHpTransfer ? caster.hp : caster.mp;
-             await logAction(`⚠️ ${caster.name}이(가) ${resource}가 부족하여 ${skill.name}을(를) 시전하지 못했습니다. (필요: ${cost} ${resource}, 현재: ${current} ${resource})`, "system");
-             return false;
-        }
-        
-        // Consume Resources
-        if (skill.mpCost > 0) await updateMP(caster, -skill.mpCost);
-        if (skill.hpCost > 0) await updateHP(caster, -skill.hpCost, "damage"); // Self-damage for HP transfer
-
-        // Animation Helper
-        const targetToken = document.querySelector(`.character-token[data-char-id="${target.id}"]`);
-        if (targetToken) {
-            const animationClass = isMpTransfer ? 'heal-animation' : 'heal-animation'; 
-            const overlayClass = isMpTransfer ? 'show-heal-overlay' : 'show-heal-overlay';
-            targetToken.classList.add(animationClass, overlayClass);
-            setTimeout(() => {
-                targetToken.classList.remove(animationClass, overlayClass);
-            }, 1000);
-        }
-
-        let message;
-        
-        if (isResurrect) {
-            // Resurrect: Set HP to 30% of maxHP, set MP to 0. Must be placed (x!=null is checked by eligibility).
-            const reviveHp = Math.round(target.maxHp * skill.multiplier);
-            await updateDoc(doc(db, 'games', gameId, 'characters', target.id), { 
-                hp: reviveHp, 
-                mp: 0 
-            });
-            message = `👼 ${caster.name}의 ${skill.name}! **${target.name}**을(를) **${reviveHp} HP, 0 MP**로 부활시켰습니다.`;
-            await logAction(message, "heal");
-        } else if (isHpTransfer) {
-            // HP Transfer (Healing)
-            const healAmount = Math.max(1, Math.round(caster.minAttack * skill.multiplier));
-            const newHp = await updateHP(target, healAmount, "heal");
-            message = `💖 ${caster.name}이(가) **${skill.hpCost} HP**를 소모하여 ${target.name}에게 **${healAmount} HP**를 전달했습니다. (${target.hp} → ${newHp})`;
-            await logAction(message, "heal");
-        } else if (isMpTransfer) {
-            // MP Transfer
-            const mpAmount = skill.multiplier; // Multiplier holds the fixed MP amount (30)
-            const newMp = await updateMP(target, mpAmount);
-            message = `💧 ${caster.name}이(가) **${skill.mpCost} MP**를 소모하여 ${target.name}에게 **${mpAmount} MP**를 전달했습니다. (${target.mp} → ${newMp})`;
-            await logAction(message, "system");
-        } else if (skill.type === 'Heal') {
-             // Standard Heal
-            const baseHeal = Math.floor(Math.random() * (caster.maxAttack - caster.minAttack + 1)) + caster.minAttack;
-            const finalHeal = Math.max(1, Math.round(baseHeal * skill.multiplier));
-            const newHp = await updateHP(target, finalHeal, "heal");
-            message = `✨ ${caster.name}의 ${skill.name}! ${target.name}의 **HP를 ${finalHeal.toFixed(0)} 회복!** (${target.hp} → ${newHp})`;
-            await logAction(message, "heal");
-        }
-        
-        return true;
+    if (!isResurrect && target.hp <= 0) {
+        await logAction(`⚠️ ${caster.name}은(는) 사망한 ${target.name}에게 ${skill.name}을(를) 사용할 수 없습니다.`, "system");
+        return false;
     }
+
+    if (isResurrect && target.hp > 0) {
+        await logAction(`⚠️ ${target.name}은(는) 이미 살아있습니다. 부활 주문을 사용할 수 없습니다.`, "system");
+        return false;
+    }
+
+    if (skill.mpCost > 0) await updateMP(caster, -skill.mpCost);
+    if (skill.hpCost > 0) await updateHP(caster, -skill.hpCost, "damage");
+
+    const targetToken = document.querySelector(`.character-token[data-char-id="${target.id}"]`);
+    if (targetToken) {
+        const animationClass = isMpTransfer ? 'heal-animation' : 'heal-animation'; 
+        const overlayClass = 'show-heal-overlay';
+        targetToken.classList.add(animationClass, overlayClass);
+        setTimeout(() => {
+            targetToken.classList.remove(animationClass, overlayClass);
+        }, 1000);
+    }
+
+    let message;
+    
+    if (isResurrect) {
+        const reviveHp = Math.round(target.maxHp * skill.multiplier);
+        await updateDoc(doc(db, 'games', gameId, 'characters', target.id), { hp: reviveHp, mp: 0 });
+        message = `👼 ${caster.name}의 ${skill.name}! **${target.name}**을(를) **${reviveHp} HP, 0 MP**로 부활시켰습니다.`;
+        
+        await triggerCombatText(target, `+${reviveHp}`, 'heal');
+        
+        await logAction(message, "heal");
+    } else if (isHpTransfer) {
+        const healAmount = Math.max(1, Math.round(caster.minAttack * skill.multiplier));
+        const newHp = await updateHP(target, healAmount, "heal");
+        message = `💖 ${caster.name}이(가) **${skill.hpCost} HP**를 소모하여 ${target.name}에게 **${healAmount} HP**를 전달했습니다. (${target.hp} → ${newHp})`;
+        
+        await triggerCombatText(target, `+${healAmount}`, 'heal');
+        await triggerCombatText(caster, `-${skill.hpCost}`, 'damage');
+
+        await logAction(message, "heal");
+    } else if (isMpTransfer) {
+        const mpAmount = skill.multiplier;
+        const newMp = await updateMP(target, mpAmount);
+        message = `💧 ${caster.name}이(가) **${skill.mpCost} MP**를 소모하여 ${target.name}에게 **${mpAmount} MP**를 전달했습니다. (${target.mp} → ${newMp})`;
+        await logAction(message, "system");
+    } else if (skill.type === 'Heal') {
+        const baseHeal = Math.floor(Math.random() * (caster.maxAttack - caster.minAttack + 1)) + caster.minAttack;
+        const finalHeal = Math.max(1, Math.round(baseHeal * skill.multiplier));
+        const newHp = await updateHP(target, finalHeal, "heal");
+        message = `✨ ${caster.name}의 ${skill.name}! ${target.name}의 **HP를 ${finalHeal.toFixed(0)} 회복!** (${target.hp} → ${newHp})`;
+
+        await triggerCombatText(target, `+${finalHeal.toFixed(0)}`, 'heal');
+
+        await logAction(message, "heal");
+    }
+    
+    return true;
+}
 
 async function applyStatusEffect(target, effectInfo) {
     if (!target || !effectInfo || !effectInfo.id || !PREDEFINED_EFFECTS[effectInfo.id]) return;
@@ -2335,6 +2558,7 @@ async function applyStatusEffect(target, effectInfo) {
     const newEffect = {
         ...baseEffect, // baseEffect의 모든 속성(id, name, effectType 등)을 여기에 복사합니다.
         turnsRemaining: effectInfo.turns,
+        isNew: true
     };
 
     if (effectInfo.value !== undefined) {
@@ -2360,40 +2584,61 @@ async function applyStatusEffect(target, effectInfo) {
     await logAction(`${icon} ${target.name}이(가) [${newEffect.name}] 효과를 받았습니다! (${newEffect.turnsRemaining}턴 지속)`, "system");
 }
     async function showGameSummaryModal(title, message) {
-        await setDoc(doc(db, 'games', gameId), { gameState: 'ENDED' }, { merge: true });
+    const remainingPCs = characters.filter(c => c.type === 'PC' && c.hp > 0 && c.x !== null).length;
+    const totalPCs = characters.filter(c => c.type === 'PC').length;
+    const remainingEnemies = characters.filter(c => c.type === 'ENEMY' && c.hp > 0 && c.x !== null).length;
+    const totalEnemies = characters.filter(c => c.type === 'ENEMY').length;
 
-        const remainingPCs = characters.filter(c => c.type === 'PC' && c.hp > 0 && c.x !== null).length;
-        const totalPCs = characters.filter(c => c.type === 'PC').length;
-        const remainingEnemies = characters.filter(c => c.type === 'ENEMY' && c.hp > 0 && c.x !== null).length;
-        const totalEnemies = characters.filter(c => c.type === 'ENEMY').length;
+    const resultMessage = `
+        ${message}
+        <hr class="my-4 border-gray-600">
+        <h4 class="font-bold text-lg mb-2">최종 결과</h4>
+        <p>남은 아군: ${remainingPCs} / ${totalPCs}</p>
+        <p>남은 적군: ${remainingEnemies} / ${totalEnemies}</p>
+    `;
 
-        const resultMessage = `
-            ${message}
-            <hr class="my-4 border-gray-600">
-            <h4 class="font-bold text-lg mb-2">최종 결과</h4>
-            <p>남은 아군: ${remainingPCs} / ${totalPCs}</p>
-            <p>남은 적군: ${remainingEnemies} / ${totalEnemies}</p>
-        `;
-
-        showCustomModal(title, resultMessage, [{ text: "확인", class: "bg-indigo-600" }]);
+    let buttons;
+    if (isAdmin) {
+        buttons = [{
+            text: "확인 (게임 재시작)",
+            class: "bg-indigo-600",
+            onClick: async () => {
+                await resetAllGameData();
+            }
+        }];
+    } else {
+        buttons = [{
+            text: "확인",
+            class: "bg-indigo-600"
+        }];
     }
+
+    showCustomModal(title, resultMessage, buttons);
+}
         async function checkGameEndCondition() {
-        const remainingPCs = characters.filter(c => c.type === 'PC' && c.hp > 0 && c.x !== null).length;
-        const remainingEnemies = characters.filter(c => c.type === 'ENEMY' && c.hp > 0 && c.x !== null).length;
+    if (!isAdmin) return false;
 
-        // 아군이 모두 쓰러졌을 경우
-        if (remainingPCs === 0) {
-            await showGameSummaryModal("패배...", "모든 아군이 쓰러졌습니다.");
-            return true; // 게임 종료됨
-        } 
-        // 적군이 모두 쓰러졌을 경우
-        else if (remainingEnemies === 0) {
-            await showGameSummaryModal("승리!", "모든 적을 물리쳤습니다.");
-            return true; // 게임 종료됨
-        }
+    const remainingPCs = characters.filter(c => c.type === 'PC' && c.hp > 0 && c.x !== null).length;
+    const remainingEnemies = characters.filter(c => c.type === 'ENEMY' && c.hp > 0 && c.x !== null).length;
 
-        return false; // 게임 계속됨
+    let gameResult = null;
+
+    if (remainingPCs === 0) {
+        gameResult = { title: "패배...", message: "모든 아군이 쓰러졌습니다." };
+    } else if (remainingEnemies === 0) {
+        gameResult = { title: "승리!", message: "모든 적을 물리쳤습니다." };
     }
+
+    if (gameResult) {
+        await setDoc(doc(db, 'games', gameId), { 
+            gameState: 'ENDED',
+            gameResult: gameResult // 모든 유저가 이 정보를 보고 팝업을 띄우게 됩니다.
+        }, { merge: true });
+        return true; // 게임 종료됨
+    }
+
+    return false; // 게임 계속됨
+}
     async function executeSkill(attacker, target, skillId) {
     const skill = SKILLS[skillId];
     if (!skill || !target) return;
@@ -2512,23 +2757,40 @@ async function applyStatusEffect(target, effectInfo) {
     }
 
     async function handlePCLogin() {
-        const charId = document.getElementById('char-login-name-select').value;
-        const password = document.getElementById('char-login-password-input').value;
-        const errorP = document.getElementById('char-login-error');
-        const targetChar = characters.find(c => c.id === charId);
+    const charId = document.getElementById('char-login-name-select').value;
+    const password = document.getElementById('char-login-password-input').value;
+    const errorP = document.getElementById('char-login-error');
+    const targetChar = characters.find(c => c.id === charId);
 
-        errorP.textContent = '';
+    errorP.textContent = '';
 
-        if (targetChar && targetChar.password === password) {
-            loggedInCharId = charId;
-            isAdmin = false;
-            closeModal('pc-login-modal');
-            updateAuthStatus();
-            showCustomModal("로그인 성공", `${targetChar.name}로 로그인했습니다.`, [{text:"확인", class:"bg-green-600"}]);
-        } else {
-            errorP.textContent = '비밀번호가 올바르지 않습니다.';
-        }
+    if (targetChar && targetChar.password === password) {
+        loggedInCharId = charId;
+        isAdmin = false;
+
+        await updateDoc(doc(db, 'games', gameId, 'characters', charId), { isLoggedIn: true });
+        
+        closeModal('pc-login-modal');
+        updateAuthStatus();
+        showCustomModal("로그인 성공", `${targetChar.name}로 로그인했습니다.`, [{text:"확인", class:"bg-green-600"}]);
+    } else {
+        errorP.textContent = '비밀번호가 올바르지 않습니다.';
     }
+}
+
+async function handleLogout() {
+    if (loggedInCharId) {
+        await updateDoc(doc(db, 'games', gameId, 'characters', loggedInCharId), { isLoggedIn: false });
+    }
+
+    loggedInCharId = null;
+    isAdmin = false;
+    isMapEditMode = false;
+    updateAuthStatus();
+    closeModal('user-info-modal');
+    render();
+    closeModal('map-edit-modal');
+}
     
     // Function to update all status indicators
     function updateAuthStatus() {
@@ -2571,15 +2833,6 @@ async function applyStatusEffect(target, effectInfo) {
         userInfoLogoutBtn.onclick = handleLogout;
     }
     
-    function handleLogout() {
-        loggedInCharId = null;
-        isAdmin = false;
-        isMapEditMode = false;
-        updateAuthStatus();
-        closeModal('user-info-modal'); // Close info modal after logout
-        render();
-        closeModal('map-edit-modal');
-    }
     // --- End PC Login Handlers ---
 
     function initializeBoard() {
@@ -3068,6 +3321,36 @@ function renderSkillButtons(selectedChar) {
             if (loggedInCharId === charId) handleLogout();
         }
     }
+    async function copyCharacter(charToCopy) {
+    if (!gameId || !isAdmin) {
+        showCustomModal("권한 오류", "캐릭터 복사는 관리자만 가능합니다.", [{ text: "확인", class: "bg-red-600" }]);
+        return;
+    }
+
+    const { id, ...charData } = charToCopy;
+    
+    const newCharData = {
+        ...charData,
+        name: `${charToCopy.name} (복사본)`,
+        x: null,
+        y: null,
+        isLoggedIn: false, 
+        hasActedThisRound: false, 
+        nextAction: null 
+    };
+    
+    try {
+        await addDoc(collection(db, "games", gameId, "characters"), newCharData);
+        
+        await logAction(`✨ 관리자가 '${charToCopy.name}' 캐릭터를 복사했습니다.`, "admin");
+        closeModal('profile-modal'); // 현재 프로필 창 닫기
+        showCustomModal("복사 완료", `'${newCharData.name}' 캐릭터가 생성되었습니다.`, [{ text: "확인", class: "bg-green-600" }]);
+    } catch (error) {
+        console.error("캐릭터 복사 실패:", error);
+        showCustomModal("오류", "캐릭터를 복사하는 중 오류가 발생했습니다.", [{ text: "확인", class: "bg-red-600" }]);
+    }
+}
+
     
     async function deleteSkill(skillId, skillName) {
         if (!gameId || !isAdmin) return;
@@ -3109,20 +3392,119 @@ function renderSkillButtons(selectedChar) {
             return `<li class="log-${log.type}">${timeString}${log.message}</li>`;
         }).join('') || `<li class="log-system">아직 기록된 행동이 없습니다.</li>`;
     }
-    
+    function renderForeshadowRanges() {
+    document.querySelectorAll('.combat-range, .threat-range-foreshadow').forEach(cell => cell.classList.remove('combat-range', 'attack-range-move', 'attack-range-skill', 'heal-range-skill', 'threat-range-foreshadow'));
+
+    if (gameState !== 'STARTED' || roundPhase !== 'ENEMY_FORESHADOW') {
+        return;
+    }
+
+    const totalThreatCells = new Set();
+    const foreshadowingEnemies = characters.filter(c => c.nextAction && c.hp > 0);
+
+    foreshadowingEnemies.forEach(char => {
+        const skillId = char.nextAction.skillId;
+        if (!SKILLS[skillId] || skillId === 'move') return;
+
+        const skill = SKILLS[skillId];
+        const moveSkill = SKILLS['move'];
+
+        const moveRange = char.moveRange !== undefined ? char.moveRange : (moveSkill?.range || 0);
+        const reachableMoveCells = new Set();
+        reachableMoveCells.add(`${char.x},${char.y}`);
+
+        if (moveRange > 0) {
+            for (let dy = -moveRange; dy <= moveRange; dy++) {
+                for (let dx = -moveRange; dx <= moveRange; dx++) {
+                    if (Math.abs(dx) + Math.abs(dy) <= moveRange) {
+                        const moveX = char.x + dx;
+                        const moveY = char.y + dy;
+                        if (canPlaceCharacter(char, moveX, moveY)) {
+                            reachableMoveCells.add(`${moveX},${moveY}`);
+                        }
+                    }
+                }
+            }
+        }
+
+        const skillRange = skill.range;
+        const skillShape = skill.rangeShape || 'diamond';
+        const charSize = char.size || 1;
+
+        reachableMoveCells.forEach(cellCoord => {
+            const [moveX, moveY] = cellCoord.split(',').map(Number);
+
+            for (let ex = 0; ex < charSize; ex++) {
+                for (let ey = 0; ey < charSize; ey++) {
+                    const originX = moveX + ex;
+                    const originY = moveY + ey;
+
+                    for (let dy = -skillRange; dy <= skillRange; dy++) {
+                        for (let dx = -skillRange; dx <= skillRange; dx++) {
+                            let inShape = (skillShape === 'diamond' && Math.abs(dx) + Math.abs(dy) <= skillRange) ||
+                                          (skillShape === 'square' && Math.abs(dx) <= skillRange && Math.abs(dy) <= skillRange) ||
+                                          (skillShape === 'cross' && ((dx === 0 && Math.abs(dy) <= skillRange) || (dy === 0 && Math.abs(dx) <= skillRange)));
+                            
+                            if (inShape) {
+                                const targetX = originX + dx;
+                                const targetY = originY + dy;
+                                if (targetX >= 0 && targetX < BOARD_SIZE && targetY >= 0 && targetY < BOARD_SIZE) {
+                                    totalThreatCells.add(`${targetX},${targetY}`);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+
+    totalThreatCells.forEach(coord => {
+        const [x, y] = coord.split(',');
+        const cell = document.querySelector(`.cell[data-x='${x}'][data-y='${y}']`);
+        if (cell) cell.classList.add('threat-range-foreshadow');
+    });
+}
+function renderLoginStatus() {
+    const list = document.getElementById('login-status-list-modal'); 
+    if (!loginStatusBtn || !list) return; 
+
+    if (!isAdmin) {
+        loginStatusBtn.classList.add('hidden');
+        return;
+    }
+
+    loginStatusBtn.classList.remove('hidden'); 
+
+    const pcs = characters.filter(c => c.type === 'PC');
+    if (pcs.length === 0) {
+        list.innerHTML = `<li class="text-gray-500">플레이어 캐릭터가 없습니다.</li>`;
+        return;
+    }
+
+    list.innerHTML = pcs.map(pc => {
+        const statusIcon = pc.isLoggedIn ? '🟢' : '🔴';
+        const statusText = pc.isLoggedIn ? '온라인' : '오프라인';
+        const textColor = pc.isLoggedIn ? 'text-green-400' : 'text-gray-500';
+        return `<li class="flex justify-between items-center p-2 rounded hover:bg-gray-700/50">
+                    <span>${pc.name}</span>
+                    <span class="${textColor} font-semibold">${statusIcon} ${statusText}</span>
+                </li>`;
+    }).join('');
+}
    function render() {
     if (!isBoardInitialized) initializeBoard();
-    
-    document.querySelectorAll('.cell').forEach(cell => { 
-        cell.innerHTML = ''; 
-        cell.classList.remove('tile-obstacle', 'tile-damage'); 
+
+    document.querySelectorAll('.cell').forEach(cell => {
+        cell.innerHTML = '';
+        cell.classList.remove('tile-obstacle', 'tile-damage', 'combat-range', 'attack-range-move', 'attack-range-skill', 'heal-range-skill', 'threat-range-foreshadow');
         const x = parseInt(cell.dataset.x), y = parseInt(cell.dataset.y);
         const tile = boardTiles[`${x},${y}`];
         if (tile) cell.classList.add(`tile-${tile.type}`);
     });
 
     gameBoard.style.backgroundImage = boardBackgroundImage ? `url('${boardBackgroundImage}')` : 'none';
-    
+
     updateAuthStatus();
 
     characters.filter(char => char.x !== null).forEach(char => {
@@ -3134,21 +3516,20 @@ function renderSkillButtons(selectedChar) {
                 ghostToken.style.width = `${char.size * 100}%`;
                 ghostToken.style.height = `${char.size * 100}%`;
                 if (char.imageUrl) {
-                    ghostToken.style.backgroundImage = `url(${char.imageUrl})`;
+                    ghostToken.style.backgroundImage = `url('${char.imageUrl}')`;
                 } else {
                     ghostToken.innerHTML = `<span class="token-placeholder font-title">${char.name.charAt(0)}</span>`;
                 }
                 cell.appendChild(ghostToken);
-                return; // 미리보기를 그렸으므로 이 캐릭터에 대한 처리를 마칩니다.
+                return;
             }
 
-            // 실제 캐릭터 토큰 생성
-            const token = document.createElement('div');
+             const token = document.createElement('div');
             token.className = 'character-token';
             token.style.width = `${char.size * 100}%`;
             token.style.height = `${char.size * 100}%`;
+                        const isActingPC = (char.id === selectedCharacterId && char.type === 'PC');
             const isMyLargeCharMoving = (char.id === selectedCharacterId && selectedSkill === 'move' && char.size > 1);
-
             let isTargetingLargeEnemy = false;
             const attacker = characters.find(c => c.id === selectedCharacterId);
             const currentSkill = SKILLS[selectedSkill];
@@ -3156,12 +3537,11 @@ function renderSkillButtons(selectedChar) {
                 isTargetingLargeEnemy = true;
             }
 
-            if (isMyLargeCharMoving || isTargetingLargeEnemy) {
+            if (isActingPC || isMyLargeCharMoving || isTargetingLargeEnemy) {
                 token.classList.add('token-click-through');
             }
             if (char.type === 'ENEMY') token.classList.add('enemy-token');
             if (char.id === selectedCharacterId || char.id === adminSelectedEnemyId) token.classList.add('selected-character');
-
             const isActionablePC = char.type === 'PC' && gameState === 'STARTED' && roundPhase === 'PLAYER_PHASE' && !char.hasActedThisRound;
             if (isActionablePC) {
                 token.classList.add('current-turn-glow');
@@ -3171,20 +3551,19 @@ function renderSkillButtons(selectedChar) {
                 token.appendChild(marker);
             }
 
-        
             const isWaitingEnemy = char.type === 'ENEMY' && roundPhase === 'ENEMY_EXECUTION' && char.nextAction != null;
             if (isWaitingEnemy) {
-                token.classList.add('enemy-turn-glow'); // 붉은색 오라
+                token.classList.add('enemy-turn-glow');
                 const marker = document.createElement('div');
-                marker.className = 'enemy-turn-marker'; // 붉은색 삼각형
+                marker.className = 'enemy-turn-marker';
                 marker.innerHTML = '▼';
                 token.appendChild(marker);
             }
-            
+
             if (char.hp <= 0) token.style.filter = 'grayscale(100%) opacity(0.5)';
             token.dataset.charId = char.id;
-            if(char.imageUrl) { 
-                token.style.backgroundImage = `url(${char.imageUrl})`; 
+            if (char.imageUrl) {
+                token.style.backgroundImage = `url('${char.imageUrl}')`;
             } else {
                 const placeholder = document.createElement('span');
                 placeholder.className = 'token-placeholder font-title';
@@ -3197,8 +3576,8 @@ function renderSkillButtons(selectedChar) {
             barContainer.className = 'hp-mp-bar-container';
             barContainer.innerHTML = `<div class="hp-bar"><div class="hp-fill" style="width: ${hpPercent}%;"></div></div><div class="mp-bar"><div class="mp-fill" style="width: ${mpPercent}%;"></div></div>`;
             token.appendChild(barContainer);
-            
-            if (char.nextAction && char.hp > 0) { 
+
+            if (char.nextAction && char.hp > 0) {
                 const bubble = document.createElement('div');
                 bubble.className = 'action-speech-bubble';
                 const skill = SKILLS[char.nextAction.skillId];
@@ -3241,33 +3620,42 @@ function renderSkillButtons(selectedChar) {
             turnStatusDiv.style.color = '#f87171';
         }
     }
-    
+
+    if (roundPhase === 'ENEMY_EXECUTION' && foreshadowingAction) {
+        const actingChar = characters.find(c => c.id === foreshadowingAction.charId);
+        if (actingChar) {
+            highlightRange(actingChar, foreshadowingAction.skillId);
+        }
+    }
+    else if (roundPhase === 'ENEMY_FORESHADOW') {
+        renderForeshadowRanges();
+    }
+    else {
+        const charForUi = characters.find(c => c.id === selectedCharacterId || c.id === previewCharacterId);
+        if (gameState === 'STARTED' && charForUi) {
+            highlightRange(charForUi, selectedSkill || 'move');
+        }
+    }
+
     const charForUi = characters.find(c => c.id === selectedCharacterId || c.id === previewCharacterId);
     renderSkillButtons(charForUi);
-    
-    if (gameState === 'STARTED' && charForUi) {
-        highlightRange(charForUi, selectedSkill || 'move');
-    } else {
-        highlightRange(null, null);
-    }
-     const adminTurnControls = document.getElementById('admin-turn-controls');
-    adminTurnControls.innerHTML = ''; // 일단 비워줍니다.
 
-    // 관리자이고, 게임이 시작됐으며, 아군 턴일 때만 버튼을 표시합니다.
+    const adminTurnControls = document.getElementById('admin-turn-controls');
+    adminTurnControls.innerHTML = '';
+
     if (isAdmin && gameState === 'STARTED' && roundPhase === 'PLAYER_PHASE') {
         adminTurnControls.innerHTML = `
             <button id="admin-end-player-phase-btn" class="w-full bg-yellow-600 hover:bg-yellow-700 text-black p-2 font-bold text-sm rounded-md">
                 ⏭ 아군 턴 강제 종료
             </button>
         `;
-
-        // 버튼에 클릭 이벤트 연결
         document.getElementById('admin-end-player-phase-btn').onclick = async () => {
             await logAction('⏭ 관리자가 아군 턴을 강제로 종료했습니다.', 'admin');
-            await advanceRoundPhase(); // 다음 페이즈(적 턴)로 즉시 넘어갑니다.
+            await advanceRoundPhase();
         };
     }
     updateCharacterList();
+    renderLoginStatus();
     renderCharacterSelectionOverlay();
     renderForeshadowing();
 }
@@ -3323,7 +3711,7 @@ function renderSkillButtons(selectedChar) {
                         </div>
                         <h4 class="text-lg font-bold text-gray-300 pt-4">스킬 선택</h4>
                         <div class="grid grid-cols-3 gap-4">${skillSelects}</div>
-                        <!-- NEW: Move Range Adjustment (only visible if the character has the default 'move' skill) -->
+                         
                         ${character.skills.includes('move') ? 
                             `
                             <h4 class="text-lg font-bold text-gray-300 pt-4 border-t border-gray-700/50">행동력 조정</h4>
@@ -3376,12 +3764,12 @@ function renderSkillButtons(selectedChar) {
         const statIcon = (type) => ({
             hp: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>`,
             defense: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z" /></svg>`,
-            mp: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 10v2h14v-2H5z"></path></svg>`,
-        }[type] || '');
-        const attackIconSvg = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 12H4M17 12h3"></path></svg>`;
+mp: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2.25c-5.385 5.965-8.25 10.561-8.25 14.25a8.25 8.25 0 1016.5 0c0-3.689-2.865-8.285-8.25-14.25z"></path></svg>`,        }[type] || '');
+        const attackIconSvg = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.4 4.6a2 2 0 0 0-2.8 0l-9.5 9.5-3.5-1.5a1 1 0 0 0-1.1.2l-1.3 1.3a1 1 0 0 0 0 1.4l2.6 2.6-2.1 2.1a1 1 0 1 0 1.4 1.4l2.1-2.1 2.6 2.6a1 1 0 0 0 1.4 0l1.3-1.3a1 1 0 0 0 .2-1.1l-1.5-3.5 9.5-9.5a2 2 0 0 0 0-2.8z"></path></svg>`;
+        
         const sizeIconSvg = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>`;
         const moveIconSvg = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
-
+        
         const buildStat = (type, label, value) => {
             let iconHtml = statIcon(type);
             if (type === 'attack') iconHtml = attackIconSvg;
@@ -3458,8 +3846,13 @@ function renderSkillButtons(selectedChar) {
                     </div>
                    <div class="mt-auto pt-4 flex-shrink-0 space-y-3">
                        <button id="edit-char-btn" class="w-full bg-gray-600 hover:bg-gray-700 font-bold py-3 px-4">캐릭터 수정</button>
-                       ${(character.x !== null && canUnplace) ? `<button id="unplace-char-btn" class="w-full bg-red-700 hover:bg-red-600 font-bold py-3 px-4">보드에서 배치 해제</button>` : ''}
-                       ${isAdmin ? `<button id="delete-char-btn" class="w-full bg-red-900 hover:bg-red-800 font-bold py-3 px-4"> 캐릭터 영구 삭제</button>` : ''}
+                       ${(character.x !== null && canUnplace) ? `<button id="unplace-char-btn" class="w-full bg-yellow-700 hover:bg-yellow-600 font-bold py-3 px-4">보드에서 배치 해제</button>` : ''}
+                       ${isAdmin ? `
+                        <div class="flex gap-2">
+                           <button id="delete-char-btn" class="w-full bg-red-900 hover:bg-red-800 font-bold py-3 px-4">영구 삭제</button>
+                           <button id="copy-char-btn" class="w-full bg-blue-600 hover:bg-blue-700 font-bold py-3 px-4">캐릭터 복사</button>
+                        </div>
+                       ` : ''}
                     </div>
             </div>
         </div>`;
@@ -3501,6 +3894,10 @@ function renderSkillButtons(selectedChar) {
                     );
                 };
             }
+            const copyBtn = document.getElementById('copy-char-btn');
+            if (copyBtn) {
+                copyBtn.onclick = () => copyCharacter(character);
+            }
 
         if (isAdmin) {
             document.querySelectorAll('.remove-effect-btn').forEach(button => {
@@ -3521,6 +3918,13 @@ function renderSkillButtons(selectedChar) {
             });
         }
     }
+    const unplaceBtn = document.getElementById('unplace-char-btn');
+if (unplaceBtn) {
+    unplaceBtn.onclick = () => {
+        // 보드 배치 해제 함수를 호출
+        removeCharacterPlacement(character.id, character.name);
+    };
+}
     profileModal.classList.remove('hidden');
     document.getElementById('close-modal-btn').onclick = () => closeModal('profile-modal');
 }
@@ -3565,20 +3969,21 @@ async function resetAllCharacterStats() {
     }
 
     async function resetAllGameData() {
-        if (!gameId) return;
+    if (!gameId) return;
 
-        await resetAllCharacterStats();
+    await resetAllCharacterStats();
+    await setDoc(doc(db, 'games', gameId, 'board', 'tiles'), { tiles: {} });
+    await setDoc(doc(db, 'games', gameId), { 
+        gameState: 'PREPARATION', 
+        currentTurnIndex: 0, 
+        currentTurnCharId: null, 
+        round: 1,
+        roundPhase: null, 
+        gameResult: deleteField() 
+    }, { merge: true });
 
-        await setDoc(doc(db, 'games', gameId, 'board', 'tiles'), { tiles: {} });
-        await setDoc(doc(db, 'games', gameId), { 
-            gameState: 'PREPARATION', 
-            currentTurnIndex: 0, 
-            currentTurnCharId: null, 
-            round: 1 
-        }, { merge: true });
-
-        await logAction(`⚠️ 관리자가 전체 게임을 초기화했습니다. 모든 캐릭터의 HP가 회복되고 재배치를 기다립니다.`, "admin");
-    }
+    await logAction(`⚠️ 관리자가 전체 게임을 초기화했습니다. 모든 캐릭터의 HP가 회복되고 재배치를 기다립니다.`, "admin");
+}
 
 
     function confirmExitMapEditMode() {
@@ -4188,7 +4593,8 @@ document.getElementById('force-enemy-phase-btn').onclick = async () => {
 async function handleCombatClick(e) {
     const cell = e.target.closest('.cell');
     if (!cell) return;
-    const cellX = parseInt(cell.dataset.x), cellY = parseInt(cell.dataset.y);
+    const cellX = parseInt(cell.dataset.x),
+        cellY = parseInt(cell.dataset.y);
 
     const clickedChar = characters.find(char => {
         if (char.x === null) return false;
@@ -4197,30 +4603,68 @@ async function handleCombatClick(e) {
     });
 
     if (roundPhase === 'ENEMY_FORESHADOW' && isAdmin) {
-        if (clickedChar && clickedChar.type === 'ENEMY') {
-            adminSelectedEnemyId = clickedChar.id;
-            selectedCharacterId = clickedChar.id;
-            selectedSkill = 'move';
-            adminForeshadowSkillId = null; 
-        } else if (clickedChar && clickedChar.type === 'PC' && adminSelectedEnemyId) {
+        // [추가] 디버깅을 위한 로그 출력
+        console.log("--- 행동 예고 클릭 감지 ---");
+        console.log("클릭 전 상태:", { 
+            actor: adminSelectedEnemyId, 
+            skill: adminForeshadowSkillId 
+        });
+        console.log("클릭된 대상:", clickedChar ? clickedChar.name : "빈 칸");
+
+        // [수정] 조건문 로직 강화
+        // 1. 행동 주체와 스킬이 모두 선택된 상태에서 캐릭터를 클릭했다면, '대상 지정'으로 판단합니다.
+        if (clickedChar && adminSelectedEnemyId && adminForeshadowSkillId) {
+            console.log("판단: '대상 지정' 로직 실행");
             const enemy = characters.find(c => c.id === adminSelectedEnemyId);
-            if (enemy && adminForeshadowSkillId) {
-                await updateDoc(doc(db, 'games', gameId, 'characters', enemy.id), {
-                    nextAction: { targetId: clickedChar.id, skillId: adminForeshadowSkillId }
-                });
-                adminSelectedEnemyId = null;
-                adminForeshadowSkillId = null;
-                selectedCharacterId = null;
-            } else {
-                showCustomModal("스킬 미선택", "먼저 사용할 스킬을 선택해주세요.", [{text:"확인", class:"bg-yellow-600"}]);
+            const skill = SKILLS[adminForeshadowSkillId];
+
+            if (enemy && skill) {
+                let isValidTarget = false;
+                if ((skill.category === 'Heal' || skill.category === 'Support') && clickedChar.type === 'ENEMY') {
+                    isValidTarget = true;
+                } else if (skill.category === 'Attack' && clickedChar.type === 'PC') {
+                    isValidTarget = true;
+                }
+
+                if (isValidTarget) {
+                    console.log(`성공: ${enemy.name}의 행동을 ${clickedChar.name} 대상으로 예고합니다.`);
+                    await updateDoc(doc(db, 'games', gameId, 'characters', enemy.id), {
+                        nextAction: { targetId: clickedChar.id, skillId: adminForeshadowSkillId }
+                    });
+                    adminSelectedEnemyId = null;
+                    adminForeshadowSkillId = null;
+                } else {
+                    console.log("실패: 유효하지 않은 대상입니다.");
+                    showCustomModal("잘못된 대상", `[${skill.name}] 스킬을 해당 대상에게 사용할 수 없습니다.`, [{ text: "확인", class: "bg-yellow-600" }]);
+                }
             }
         }
+        // 2. 위의 경우가 아닐 때, 적 캐릭터를 클릭했다면 '행동 주체 선택'으로 판단합니다.
+        else if (clickedChar && clickedChar.type === 'ENEMY') {
+            console.log("판단: '행동 주체 선택' 로직 실행");
+            adminSelectedEnemyId = clickedChar.id;
+            adminForeshadowSkillId = null; // 스킬 선택은 초기화
+        }
+        // 3. 그 외의 경우 (빈 칸 클릭 등)에는 선택을 모두 초기화합니다.
+        else {
+            console.log("판단: 선택 초기화");
+            adminSelectedEnemyId = null;
+            adminForeshadowSkillId = null;
+        }
+        
+        console.log("클릭 후 상태:", { 
+            actor: adminSelectedEnemyId, 
+            skill: adminForeshadowSkillId 
+        });
+        console.log("--------------------------");
+
         render();
         return;
     }
 
+    // ... 이하 나머지 코드는 기존과 동일합니다 ...
     if (roundPhase === 'ENEMY_EXECUTION' && isAdmin) {
-          const selectedCharacter = characters.find(c => c.id === selectedCharacterId);
+        const selectedCharacter = characters.find(c => c.id === selectedCharacterId);
         if (selectedCharacter && !clickedChar && !cell.classList.contains('combat-range')) {
             if (selectedCharActionPhase === 'ACTION' && preMovePosition) {
                 await updateDoc(doc(db, 'games', gameId, 'characters', selectedCharacter.id), {
@@ -4231,7 +4675,7 @@ async function handleCombatClick(e) {
             }
             selectedCharacterId = null;
             selectedSkill = null;
-            render(); 
+            render();
             return;
         }
         if (selectedCharacter) {
@@ -4250,7 +4694,7 @@ async function handleCombatClick(e) {
                 }
                 const skill = SKILLS[selectedSkill];
                 if (skill) {
-                    await executeSkill(selectedCharacter, (skill.isAoe ? {x: cellX, y: cellY} : clickedChar), selectedSkill);
+                    await executeSkill(selectedCharacter, (skill.isAoe ? { x: cellX, y: cellY } : clickedChar), selectedSkill);
                 }
             }
             return;
@@ -4270,12 +4714,11 @@ async function handleCombatClick(e) {
     if (roundPhase === 'PLAYER_PHASE') {
         const selectedCharacter = characters.find(c => c.id === selectedCharacterId);
 
-
         if (selectedCharacter) {
             if (selectedCharActionPhase === 'MOVE') {
                 if (cell.classList.contains('attack-range-move')) {
                     await updateDoc(doc(db, 'games', gameId, 'characters', selectedCharacter.id), { x: cellX, y: cellY });
-                    selectedCharActionPhase = 'ACTION'; 
+                    selectedCharActionPhase = 'ACTION';
                     selectedSkill = null;
                     render();
                     return;
@@ -4293,7 +4736,7 @@ async function handleCombatClick(e) {
 
             } else if (selectedCharActionPhase === 'ACTION') {
                 if (clickedChar && clickedChar.id === selectedCharacter.id) {
-                    undoMove(); 
+                    undoMove();
                     return;
                 }
                 const skill = SKILLS[selectedSkill];
@@ -4308,27 +4751,23 @@ async function handleCombatClick(e) {
                 return;
             }
         } else {
-            // 무언가(캐릭터든 빈 칸이든) 클릭했다면
             if (clickedChar && clickedChar.hp > 0) {
                 const canAdminActForPC = isAdmin && clickedChar.type === 'PC' && !clickedChar.hasActedThisRound;
                 const canPlayerSelect = loggedInCharId === clickedChar.id && clickedChar.type === 'PC' && !clickedChar.hasActedThisRound;
 
-                // 자신의 턴인 캐릭터를 클릭하면 -> '선택'
                 if (canAdminActForPC || canPlayerSelect) {
                     selectedCharacterId = clickedChar.id;
                     selectedCharActionPhase = 'MOVE';
                     selectedSkill = 'move';
                     preMovePosition = { x: clickedChar.x, y: clickedChar.y };
-                    previewCharacterId = null; // 미리보기 모드 끄기
-                    if(canAdminActForPC) {
-                       await logAction(`👮 관리자가 ${clickedChar.name}의 행동을 대리합니다.`, 'admin');
+                    previewCharacterId = null;
+                    if (canAdminActForPC) {
+                        await logAction(`👮 관리자가 ${clickedChar.name}의 행동을 대리합니다.`, 'admin');
                     }
-                // 그 외 다른 캐릭터를 클릭하면 -> '미리보기'
                 } else {
                     previewCharacterId = clickedChar.id;
-                    selectedCharacterId = null; // 선택 모드 끄기
+                    selectedCharacterId = null;
                 }
-            // 빈 칸을 클릭하면 -> 모든 선택/미리보기 해제
             } else {
                 previewCharacterId = null;
                 selectedCharacterId = null;
@@ -4337,7 +4776,6 @@ async function handleCombatClick(e) {
         }
     }
 }
-
     async function gameBoardClick(e) {
         if(!gameId) return;
         if (gameState === 'PREPARATION') {
@@ -4349,6 +4787,21 @@ async function handleCombatClick(e) {
     
     // --- Map Edit Modal Listeners ---
     document.querySelectorAll('.tile-select-btn').forEach(btn => {
+        loginStatusBtn.addEventListener('click', () => {
+    loginStatusModal.classList.remove('hidden');
+});
+
+document.getElementById('close-login-status-modal-btn').onclick = () => {
+    closeModal('login-status-modal');
+};
+
+loginStatusModal.addEventListener('click', (e) => {
+    if (e.target.id === 'login-status-modal') {
+        closeModal('login-status-modal');
+    }
+});
+
+createGameBtn.addEventListener('click', createGame);
         btn.onclick = (e) => {
             currentTileType = e.currentTarget.dataset.tileType;
             document.getElementById('map-edit-status').textContent = `현재 선택: ${e.currentTarget.textContent.trim()}`;
@@ -4444,6 +4897,7 @@ async function handleCombatClick(e) {
         const errorP = document.getElementById('admin-password-error');
         if (gameId) {
             const gameDoc = await getDoc(doc(db, 'games', gameId));
+//여기를 수정해주세요 : 관리자 비밀번호
             const correctPassword = gameDoc.data().adminPassword || "0000";
             if (input.value === correctPassword) {
                 closeModal('admin-password-modal');
@@ -4453,6 +4907,7 @@ async function handleCombatClick(e) {
                 input.value = '';
                 errorP.textContent = '';
                 updateAuthStatus();
+                    render();
                 await logAction("👑 관리자가 로그인했습니다.", "system");
             } else {
                 errorP.textContent = '비밀번호가 올바르지 않습니다.';
@@ -4463,36 +4918,44 @@ async function handleCombatClick(e) {
 
     gameBoard.addEventListener('click', gameBoardClick);
     gameBoard.addEventListener('dragover', e => e.preventDefault());
-    gameBoard.addEventListener('drop', async e => {
-    e.preventDefault(); if(!gameId) return;
-    const charId = e.dataTransfer.getData('text/plain'), cell = e.target.closest('.cell');
-    if (cell && charId) {
-        const targetChar = characters.find(c => c.id === charId);
-        const isPC = targetChar?.type === 'PC';
+    async function handleDropOnCell(charId, cell) {
+    if (!gameId || !cell || !charId) return;
 
-        const canDragAndDrop = (isAdmin && isAdminMoveAllowed) || (isPC && loggedInCharId === charId && roundPhase === 'PLAYER_PHASE' && characters[currentTurnIndex]?.id === charId);
+    const targetChar = characters.find(c => c.id === charId);
+    if (!targetChar) return;
 
-        if (targetChar && canDragAndDrop) { // 드래그 드롭 가능 여부만 체크
-            const newX = parseInt(cell.dataset.x);
-            const newY = parseInt(cell.dataset.y);
+    const canDragAndDrop = (isAdmin && isAdminMoveAllowed) || 
+                           (gameState === 'PREPARATION' && targetChar.type === 'PC' && (isAdmin || loggedInCharId === charId)) ||
+                           (gameState === 'STARTED' && targetChar.type === 'PC' && loggedInCharId === charId && selectedCharacterId === charId);
 
-            if (canPlaceCharacter(targetChar, newX, newY)) {
-                await updateDoc(doc(db, 'games', gameId, 'characters', charId), { x: newX, y: newY });
-                
-                if (targetChar.x === null) {
-                   await logAction(`✅ ${targetChar.name}이(가) 전장에 합류했습니다.`, "join");
-                } else if (isAdmin && isAdminMoveAllowed) { // 관리자 이동 로그
-                   await logAction(`👮 관리자가 ${targetChar.name}을(를) (${targetChar.x},${targetChar.y})에서 (${newX}, ${newY})로 이동했습니다.`, "admin-move");
-                } else { // 일반 유저 이동 로그
-                    await logAction(`🏃 ${targetChar.name}이(가) (${targetChar.x},${targetChar.y})에서 (${newX}, ${newY})로 이동했습니다.`, "move");
-                }
+    if (canDragAndDrop) {
+        const newX = parseInt(cell.dataset.x);
+        const newY = parseInt(cell.dataset.y);
+
+        if (canPlaceCharacter(targetChar, newX, newY)) {
+            const oldX = targetChar.x;
+            await updateDoc(doc(db, 'games', gameId, 'characters', charId), { x: newX, y: newY });
+            
+            if (oldX === null) {
+               await logAction(`✅ ${targetChar.name}이(가) 전장에 합류했습니다.`, "join");
+            } else if (isAdmin && isAdminMoveAllowed) {
+               await logAction(`👮 관리자가 ${targetChar.name}을(를) (${oldX},${targetChar.y})에서 (${newX}, ${newY})로 이동했습니다.`, "admin-move");
             } else {
-                 showCustomModal("배치 오류", "해당 위치는 이미 다른 캐릭터가 차지하고 있거나 장애물입니다.", [{ text: "확인", class: "bg-red-600" }]);
+                await logAction(`🏃 ${targetChar.name}이(가) (${oldX},${targetChar.y})에서 (${newX}, ${newY})로 이동했습니다.`, "move");
             }
-        } else { // 권한이 없는 경우 경고 메시지 표시
-            showCustomModal("권한 부족", "전투 중에는 관리자 또는 자신의 턴인 캐릭터만 이동할 수 있습니다.", [{ text: "확인", class: "bg-red-600" }]);
+        } else {
+             showCustomModal("배치 오류", "해당 위치는 이미 다른 캐릭터가 차지하고 있거나 장애물입니다.", [{ text: "확인", class: "bg-red-600" }]);
         }
+    } else {
+        showCustomModal("권한 부족", "캐릭터를 배치하거나 이동할 권한이 없습니다.", [{ text: "확인", class: "bg-red-600" }]);
     }
+}
+
+gameBoard.addEventListener('drop', async e => {
+    e.preventDefault();
+    const charId = e.dataTransfer.getData('text/plain');
+    const cell = e.target.closest('.cell');
+    await handleDropOnCell(charId, cell);
 });
  async function saveSettingsToFile() {
         if (!gameId) return;
@@ -4598,6 +5061,97 @@ async function handleCombatClick(e) {
         applyTheme(newTheme);
     });
     applyTheme(localStorage.getItem('theme') || 'dark');
+
+function initializeTouchDragAndDrop() {
+    const selectionOverlay = document.getElementById('character-selection-overlay');
+    const ghost = document.getElementById('drag-ghost');
+    let draggedCharId = null;
+    let lastOverCell = null;
+
+    const onTouchMove = (e) => {
+        if (!draggedCharId) return;
+        
+        const touch = e.touches[0];
+        ghost.style.left = `${touch.clientX - ghost.offsetWidth / 2}px`;
+        ghost.style.top = `${touch.clientY - ghost.offsetHeight / 2}px`;
+
+        const elementUnder = document.elementFromPoint(touch.clientX, touch.clientY);
+        const currentOverCell = elementUnder ? elementUnder.closest('.cell') : null;
+
+        if (currentOverCell !== lastOverCell) {
+            if (lastOverCell) {
+                lastOverCell.classList.remove('drag-over');
+            }
+            if (currentOverCell) {
+                currentOverCell.classList.add('drag-over');
+            }
+            lastOverCell = currentOverCell;
+        }
+    };
+
+    const onTouchEnd = async (e) => {
+        if (!draggedCharId) return;
+
+        if (lastOverCell) {
+            lastOverCell.classList.remove('drag-over');
+            await handleDropOnCell(draggedCharId, lastOverCell);
+        }
+
+        ghost.classList.add('hidden');
+        draggedCharId = null;
+        lastOverCell = null;
+        document.removeEventListener('touchmove', onTouchMove);
+        document.removeEventListener('touchend', onTouchEnd);
+    };
+
+    selectionOverlay.addEventListener('touchstart', (e) => {
+        const card = e.target.closest('.char-card-item[draggable="true"]');
+        if (!card) return;
+        
+        e.preventDefault();
+        
+        draggedCharId = card.dataset.charId;
+        const touch = e.touches[0];
+
+        ghost.style.left = `${touch.clientX - ghost.offsetWidth / 2}px`;
+        ghost.style.top = `${touch.clientY - ghost.offsetHeight / 2}px`;
+        ghost.classList.remove('hidden');
+
+        document.addEventListener('touchmove', onTouchMove);
+        document.addEventListener('touchend', onTouchEnd);
+    }, { passive: false });
+}
+
+initializeTouchDragAndDrop();
+    const charListHeader = document.getElementById('char-list-header');
+    const charListContent = document.getElementById('char-list-content');
+    const charListToggleIcon = document.getElementById('char-list-toggle-icon');
+
+    if (charListHeader && charListContent && charListToggleIcon) {
+        charListHeader.addEventListener('click', () => {
+            if (window.innerWidth >= 1024) {
+                return;
+            }
+            
+            charListContent.classList.toggle('hidden');
+            
+            charListToggleIcon.classList.toggle('rotate-180');
+        });
+    }
+
+    if (window.innerWidth < 1024) {
+        charListContent.classList.add('hidden');
+        charListToggleIcon.classList.remove('rotate-180');
+    } else {
+        charListContent.classList.remove('hidden');
+    }
+window.addEventListener('beforeunload', async (event) => {
+    if (loggedInCharId) {
+        await updateDoc(doc(db, 'games', gameId, 'characters', loggedInCharId), { isLoggedIn: false });
+    }
+});
 </script>
 </body>
 </html>
+
+
